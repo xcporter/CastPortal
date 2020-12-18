@@ -1,0 +1,22 @@
+.list-menu {
+    -fx-padding: 8;
+    -fx-graphic-fixed-size: 2.5em;
+    -fx-background-color: #2B2B2E;
+}
+
+.list-item {
+    -fx-padding: 10;
+    -fx-background-color: #2B2B2E;
+}
+
+.list-item * {
+    -fx-fill: #fff;
+}
+
+.list-item:hover {
+    -fx-background-color: #3C3C3F;
+}
+
+.glyph-icon {
+    -fx-fill: orange;
+}
