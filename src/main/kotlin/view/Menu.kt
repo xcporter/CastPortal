@@ -10,7 +10,7 @@ import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import tornadofx.*
 
-class Left : View() {
+class Menu : View() {
     override val root = vbox {
         addClass(menu)
         hbox {
@@ -31,11 +31,6 @@ class Left : View() {
             item("Settings", FontAwesomeIconView(FontAwesomeIcon.GEAR, "2em"))
         }
         region { vgrow = Priority.ALWAYS }
-        hbox {
-            addClass(nowPlaying)
-            text("Now Playing (artwork)") {
-                fill = textColor
-            }
-        }
+        add(Empty::class)
     }
 }

@@ -5,7 +5,7 @@ import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import tornadofx.*
 
-class Bottom : View() {
+class Player : View() {
     override val root = vbox {
         addClass(player)
         region { vgrow = Priority.ALWAYS }

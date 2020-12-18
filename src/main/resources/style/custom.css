@@ -17,6 +17,15 @@
     -fx-background-color: #3C3C3F;
 }
 
-.glyph-icon {
+.list-item > .glyph-icon {
     -fx-fill: orange;
+}
+
+.label > .glyph-icon {
+    -fx-fill: #3C3C3F;
+}
+
+.scroll-pane {
+    -fx-background-insets: 0;
+    -fx-padding: 0;
 }
