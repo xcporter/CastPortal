@@ -10,7 +10,7 @@ import model.RSS
 import java.io.File
 
 object RssParser {
-    private val mapper = XmlMapper(JacksonXmlModule().apply { setDefaultUseWrapper(false) })
+    val mapper = XmlMapper(JacksonXmlModule().apply { setDefaultUseWrapper(false) })
         .registerKotlinModule()
         .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
