@@ -21,10 +21,6 @@ data class Channel(var title: String? = null,
                    @JsonProperty("item")
                    var items: List<RssItem> = listOf()) : RssContainer
 
-data class RssImage (var url: String? = null, var title: String? = null, var link: String? = null) : RssContainer
-
-data class RssOwner (var name:String? = null, var email: String? = null) : RssContainer
-
 data class RssItem (var title: String? = null,
                     var description: String? = null,
                     var pubDate: String? = null,
@@ -37,4 +33,11 @@ data class RssItem (var title: String? = null,
                     var explicit: String? = null,
                     var enclosure: RssEnclosure? ) : RssContainer
 
-data class RssEnclosure (var url: String? = null, var length: Long? = null, var type: String? = null) : RssContainer
+data class RssEnclosure (var url: String? = null,
+                         var length: Long? = null,
+                         var type: String? = null) : RssContainer
+
+data class RssImage (@JsonAlias("href", "url") var href: String? = null) : RssContainer
+
+data class RssOwner (var name:String? = null,
+                     var email: String? = null) : RssContainer
