@@ -8,6 +8,10 @@ class BaseStyle : Stylesheet() {
         val player by cssclass()
         val menu by cssclass()
         val menubuttons by cssclass()
+        val episodeButtons by cssclass()
+        val episode by cssclass()
+        val playButton by cssclass()
+        val moreEpisodes by cssclass()
 
         val textColor = c("#FFFFFF")
         val primary = c("#3C3C3F")
@@ -33,9 +37,54 @@ class BaseStyle : Stylesheet() {
 //            effect = DropShadow(8.0, 6.0, 6.0, c("#00000044"))
         }
 
+        episodeButtons {
+            borderRadius += box(0.px)
+            backgroundColor += highlight
+            textFill = highlight
+            and(hover) {
+                backgroundColor += midHigh
+            }
+        }
+
+        playButton {
+            borderRadius += box(0.px)
+            backgroundColor += highlight
+            textFill = highlight
+            and(hover) {
+                backgroundColor += Color.GREEN
+            }
+        }
+
+        episode {
+            backgroundColor += primary
+            padding = box(8.px)
+            and(hover) {
+                backgroundColor += c("#081F1D")
+            }
+        }
+
+        moreEpisodes {
+            fontSize = 2.em
+            backgroundColor += Color.TRANSPARENT
+            borderRadius += box(4.px)
+            backgroundRadius += box(4.px)
+            backgroundInsets += box(2.px)
+            borderWidth += box(2.px)
+            borderColor += box(primary)
+            textFill = shadow
+
+            and (hover) {
+                backgroundColor += highlight
+            }
+
+            and (pressed) {
+                backgroundColor += Color.WHITE
+            }
+        }
+
         player {
             prefHeight = 80.px
-            backgroundColor += midHigh
+            backgroundColor += shadow
         }
 
         menu {

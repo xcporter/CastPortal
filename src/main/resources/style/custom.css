@@ -21,11 +21,11 @@
     -fx-fill: orange;
 }
 
-.label > .glyph-icon {
-    -fx-fill: #3C3C3F;
-}
-
 .scroll-pane {
     -fx-background-insets: 0;
     -fx-padding: 0;
+}
+
+.scroll-pane > .viewport {
+   -fx-background-color: transparent;
 }
