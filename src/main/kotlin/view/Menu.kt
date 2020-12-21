@@ -8,6 +8,7 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
+import javafx.scene.paint.Color
 import tornadofx.*
 
 class Menu : View() {
@@ -30,6 +31,7 @@ class Menu : View() {
             item("Downloads", FontAwesomeIconView(FontAwesomeIcon.DOWNLOAD, "2em"))
             item("Settings", FontAwesomeIconView(FontAwesomeIcon.GEAR, "2em"))
         }
+
         region { vgrow = Priority.ALWAYS }
         add(Empty::class)
     }
