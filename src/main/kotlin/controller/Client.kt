@@ -35,7 +35,21 @@ class Client : Controller(), CoroutineScope  {
             method = HttpMethod.Get
         }
         return@withContext if (res.status.isSuccess()) {
-            println("get success")
+            println("download image")
+            res.content.copyAndClose(file.writeChannel())
+            file
+        } else null.also { println("${res.status} ${res.content}") }
+    }
+
+    suspend fun downloadNowPlaying(url: String) : File? = withContext(coroutineContext) {
+        val file = File("${path.path}/nowPlaying/${url.fileNameEncode()}")
+        file.parentFile.mkdirs()
+        val res = client.request<HttpResponse> {
+            url(URL(url))
+            method = HttpMethod.Get
+        }
+        return@withContext if (res.status.isSuccess()) {
+            println("download now playing")
             res.content.copyAndClose(file.writeChannel())
             file
         } else null.also { println("${res.status} ${res.content}") }

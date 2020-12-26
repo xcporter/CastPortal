@@ -1,12 +1,11 @@
 package controller
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import controller.Encoder.fileNameEncode
 import kotlinx.coroutines.*
+import model.CastScope
 import model.RSS
 import tornadofx.*
 import java.io.File
-import java.net.URL
 
 class Syndication : Controller(), CoroutineScope {
     val job = SupervisorJob()
@@ -15,6 +14,12 @@ class Syndication : Controller(), CoroutineScope {
     val rssFeeds = observableListOf<RSS>()
     val client: Client by inject()
     val store: Store by inject()
+
+    init {
+        rssFeeds.onChange {
+            CastView.castScopes.addAll(it.list.map { CastScope(it) } )
+        }
+    }
 
     suspend fun refreshRss() = withContext(coroutineContext) {
         rssLinks.map { link ->

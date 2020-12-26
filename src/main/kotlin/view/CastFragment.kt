@@ -16,27 +16,25 @@ import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.text.TextAlignment
 import kotlinx.coroutines.*
+import model.CastScope
 import model.EpisodeModel
 import model.SyndicationModel
 import tornadofx.*
 import java.io.File
 
 class CastFragment() : Fragment(), CoroutineScope {
-    val model: SyndicationModel by param()
+    override val scope = super.scope as CastScope
     override val coroutineContext = Dispatchers.IO
-
-    val episodesToDisplay = observableListOf<EpisodeModel>()
 
     var imageContainer: HBox by singleAssign()
 
-    val isViewAll = SimpleBooleanProperty(false)
 
     init {
-        isViewAll.onChange {
+        scope.isViewAll.onChange {
             if (it) {
-                episodesToDisplay.addAll(model.items.drop(Configuration.displayNumberOfEpisodes))
+                scope.episodesToDisplay.addAll(scope.model.items.drop(Configuration.displayNumberOfEpisodes))
             } else {
-                episodesToDisplay.remove((Configuration.displayNumberOfEpisodes - 1), episodesToDisplay.size)
+                scope.episodesToDisplay.remove(Configuration.displayNumberOfEpisodes, scope.episodesToDisplay.size)
             }
         }
     }
@@ -60,14 +58,14 @@ class CastFragment() : Fragment(), CoroutineScope {
                     style {
                         padding = box(0.px, 16.px)
                     }
-                    text(model.title) {
+                    text(scope.model.title) {
                         style {
                             fontSize = 4.em
                             fill = highlight
                         }
                         wrappingWidth = 400.0
                     }
-                    text(model.author) {
+                    text(scope.model.author) {
                         style {
                             fontSize = 3.em
                             fill = primary
@@ -80,25 +78,41 @@ class CastFragment() : Fragment(), CoroutineScope {
 
             hbox {
                 alignment = Pos.CENTER
-                text(model.description) {
+                text(scope.model.description) {
                     wrappingWidth = 450.0
                 }
             }
         }
         vbox(12.0)  {
             fitToParentSize()
+            hbox {
+                visibleWhen { scope.isViewAll }
+                managedWhen { scope.isViewAll }
+                alignment = Pos.CENTER_RIGHT
+                button("view fewer episodes") {
+                    addClass(moreEpisodes)
+                    style {
+                        fontSize = 1.em
+                    }
+                    action {
+                        scope.isViewAll.value = !scope.isViewAll.value
+                    }
+                }
+            }
             vbox(4.0) {
-                bindChildren(episodesToDisplay) {
-                    find<EpisodeFragment>("model" to it).root
+                bindChildren(scope.episodesToDisplay) {
+                    find<EpisodeFragment>(scope, "model" to it).root
                 }
             }
             hbox {
                 alignment = Pos.CENTER
-                button("view all episodes") {
-                    textProperty().bind(isViewAll.stringBinding { if (it == true) "view fewer episodes" else "view all episodes" })
-                    addClass(moreEpisodes)
-                    action {
-                        isViewAll.value = !isViewAll.value
+                if (scope.model.items.size > Configuration.displayNumberOfEpisodes) {
+                    button("view all episodes") {
+                        textProperty().bind(scope.isViewAll.stringBinding { if (it == true) "view fewer episodes" else "view all episodes" })
+                        addClass(moreEpisodes)
+                        action {
+                            scope.isViewAll.value = !scope.isViewAll.value
+                        }
                     }
                 }
             }
@@ -106,17 +120,17 @@ class CastFragment() : Fragment(), CoroutineScope {
     }
 
     override fun onDock() {
-        episodesToDisplay.addAll(model.items.take(Configuration.displayNumberOfEpisodes))
+        scope.episodesToDisplay.addAll(scope.model.items.take(Configuration.displayNumberOfEpisodes))
 
 //        wait for image files to download before building UI
         launch {
             withTimeout(30000) {
-                while(!File("${Configuration.path.path}/images/${model.imageUrl.value}").exists() && this.isActive) {
+                while(!File("${Configuration.path.path}/images/${scope.model.imageUrl.value}").exists() && this.isActive) {
                     delay(10)
                 }
                 withContext(Dispatchers.Main) {
                     imageContainer.add(
-                        imageview("file://${Configuration.path.path}/images/${model.imageUrl.value}") {
+                        imageview("file://${Configuration.path.path}/images/${scope.model.imageUrl.value}") {
                             fitWidth = 150.0
                             fitHeight = 150.0
                         }

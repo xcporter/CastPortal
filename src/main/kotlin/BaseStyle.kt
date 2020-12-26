@@ -1,3 +1,4 @@
+import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import tornadofx.*
@@ -12,6 +13,7 @@ class BaseStyle : Stylesheet() {
         val episode by cssclass()
         val playButton by cssclass()
         val moreEpisodes by cssclass()
+        val playerButtons by cssclass()
 
         val textColor = c("#FFFFFF")
         val primary = c("#3C3C3F")
@@ -55,11 +57,31 @@ class BaseStyle : Stylesheet() {
             }
         }
 
+        thumb {
+            prefHeight = 20.px
+            prefWidth = 4.px
+            alignment = Pos.TOP_CENTER
+            backgroundColor += c("#3C7D7F")
+        }
+        track {
+            prefHeight = 2.px
+        }
+
         episode {
             backgroundColor += primary
             padding = box(8.px)
             and(hover) {
                 backgroundColor += c("#081F1D")
+            }
+        }
+
+        playerButtons {
+            backgroundColor += Color.TRANSPARENT
+            and (hover) {
+                backgroundColor += c("#081F1D")
+            }
+            and (pressed) {
+                backgroundColor += c("#0A3C3A")
             }
         }
 

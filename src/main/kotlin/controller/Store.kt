@@ -26,4 +26,8 @@ class Store : Controller(),  CoroutineScope {
     fun listStoredRss() : List<String> = File("${path.path}/rss/")
         .listFiles()
         ?.let { it.map {it.name} } ?: listOf()
+
+    fun clearNowPlaying() = File("${path.path}/nowPlaying/").listFiles()?.forEach { it.delete() }
+
+    fun loadNowPlaying(url: String) = File("${path.path}/nowPlaying/${url.fileNameEncode()}").takeIf { it.exists() }
 }
