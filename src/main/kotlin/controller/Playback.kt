@@ -17,10 +17,8 @@ import java.io.File
 import java.net.URL
 import kotlin.properties.Delegates.observable
 
-object Playback : CoroutineScope {
-    val job = SupervisorJob()
-    override val coroutineContext = Dispatchers.IO + job
-
+object Playback {
+    val mediaLoadSupervisor = SupervisorJob()
 
     val audio = SimpleObjectProperty<File>()
     val media = SimpleObjectProperty<Media>()

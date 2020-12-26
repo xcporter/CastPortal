@@ -1,12 +1,8 @@
 package controller
 
-import controller.Encoder.fileNameEncode
-import kotlinx.coroutines.SupervisorJob
 import model.CastScope
 import model.EpisodeModel
 import tornadofx.*
-import java.io.File
-import java.net.URL
 
 object CastView {
     val castScopes = observableListOf<CastScope>()

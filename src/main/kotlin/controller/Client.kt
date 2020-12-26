@@ -17,38 +17,35 @@ import tornadofx.*
 import java.io.File
 import java.net.URL
 
-class Client : Controller(), CoroutineScope  {
-    val job = SupervisorJob()
-    override val coroutineContext = Dispatchers.IO + job
-
+class Client : Controller() {
     val client = HttpClient(Apache) {
         expectSuccess = false
     }
 
-    suspend fun downloadRss(url: String) : String? = withContext(coroutineContext) { client.get(url) }
+    suspend fun downloadRss(url: String) : String? = client.get(url)
 
-    suspend fun downloadImage(url: String) : File? = withContext(coroutineContext) {
+    suspend fun downloadImage(url: String) : File? {
         val file = File("${path.path}/images/${url.fileNameEncode()}")
         file.parentFile.mkdirs()
         val res = client.request<HttpResponse> {
             url(URL(url))
             method = HttpMethod.Get
         }
-        return@withContext if (res.status.isSuccess()) {
+        return if (res.status.isSuccess()) {
             println("download image")
             res.content.copyAndClose(file.writeChannel())
             file
         } else null.also { println("${res.status} ${res.content}") }
     }
 
-    suspend fun downloadNowPlaying(url: String) : File? = withContext(coroutineContext) {
+    suspend fun downloadNowPlaying(url: String) : File? {
         val file = File("${path.path}/nowPlaying/${url.fileNameEncode()}")
         file.parentFile.mkdirs()
         val res = client.request<HttpResponse> {
             url(URL(url))
             method = HttpMethod.Get
         }
-        return@withContext if (res.status.isSuccess()) {
+        return if (res.status.isSuccess()) {
             println("download now playing")
             res.content.copyAndClose(file.writeChannel())
             file
