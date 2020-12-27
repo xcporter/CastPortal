@@ -2,6 +2,7 @@ package view
 
 import BaseStyle.Companion.menu
 import BaseStyle.Companion.menubuttons
+import BaseStyle.Companion.midHigh
 import BaseStyle.Companion.nowPlaying
 import BaseStyle.Companion.textColor
 import controller.Playback
@@ -13,6 +14,7 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import javafx.scene.text.TextAlignment
+import model.PrimaryViewModel
 import tornadofx.*
 
 class Menu : View() {
@@ -33,12 +35,19 @@ class Menu : View() {
         listmenu {
             addClass(menubuttons)
             useMaxWidth = true
-            item("Home", FontAwesomeIconView(FontAwesomeIcon.HOME, "2em"))
-            item("Downloads", FontAwesomeIconView(FontAwesomeIcon.DOWNLOAD, "2em"))
-            item("Settings", FontAwesomeIconView(FontAwesomeIcon.GEAR, "2em"))
+            item("Home", FontAwesomeIconView(FontAwesomeIcon.HOME, "2em")) {
+                whenSelected { PrimaryViewModel.viewState.value = ViewState.HOME }
+            }
+            item("Downloads", FontAwesomeIconView(FontAwesomeIcon.DOWNLOAD, "2em")) {
+                whenSelected { PrimaryViewModel.viewState.value = ViewState.DOWNLOADS }
+            }
+            item("Settings", FontAwesomeIconView(FontAwesomeIcon.GEAR, "2em")) {
+                whenSelected { PrimaryViewModel.viewState.value = ViewState.SETTINGS }
+            }
         }
 
         region { vgrow = Priority.ALWAYS }
+
         container = imageview {
             addClass(nowPlaying)
             imageProperty().bind(Playback.image)

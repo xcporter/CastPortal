@@ -1,13 +1,16 @@
 package view
 
+import BaseStyle.Companion.midHigh
 import BaseStyle.Companion.primary
-import controller.CastView
+import model.PrimaryViewModel
 import controller.Client
+import controller.Playback
 import controller.Store
 import controller.Syndication
 import javafx.geometry.Pos
 import javafx.scene.control.ScrollPane
 import javafx.scene.layout.Priority
+import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,30 +25,35 @@ class Primary() : View ("Cast Portal"), CoroutineScope {
     val store: Store by inject()
     val client: Client by inject()
 
+    val container = vbox {
+        vgrow = Priority.ALWAYS
+        alignment = Pos.CENTER
+        add<Home>()
+    }
+
+    init {
+        PrimaryViewModel.viewState.onChange {
+            it?.let {
+                container.replaceChildren (
+                    when(it) {
+                        ViewState.HOME -> find<Home>().root
+                        ViewState.DOWNLOADS -> find<Downloads>().root
+                        ViewState.SETTINGS -> find<Settings>().root
+                    }
+                )
+            }
+        }
+    }
+
     override val root = borderpane {
+        shortcut("space") {
+            if (Playback.isPlaying.value) Playback.player?.pause()
+            else Playback.player?.play()
+        }
         left<Menu>()
         center = vbox {
-            alignment = Pos.BOTTOM_CENTER
-            scrollpane {
-                hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
-                style {
-                    backgroundColor += primary
-                }
-
-                isFitToHeight = true
-                isFitToWidth = true
-
-                vbox(15.0) {
-                    hgrow = Priority.ALWAYS
-                    alignment = Pos.CENTER
-                    style {
-                        padding = box(30.px, 0.px)
-                    }
-                    bindChildren(CastView.castScopes) {
-                        find<CastFragment>(it).root
-                    }
-                }
-            }
+            fitToParentSize()
+            add(container)
             add<Player>()
         }
 
