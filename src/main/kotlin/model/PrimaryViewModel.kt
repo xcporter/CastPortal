@@ -1,15 +1,30 @@
-package controller
+package model
 
-import model.CastScope
-import model.EpisodeModel
+import controller.Configuration
+import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleObjectProperty
+import javafx.beans.property.SimpleStringProperty
+import kotlinx.coroutines.SupervisorJob
 import tornadofx.*
+import java.io.File
 
-object CastView {
+object PrimaryViewModel {
+    val backgroundJobs = SupervisorJob()
     val castScopes = observableListOf<CastScope>()
+    val viewState = SimpleObjectProperty(ViewState.HOME)
+    val error = SimpleStringProperty()
+    val isError = error.booleanBinding() { !it.isNullOrBlank() }
+
+    val downloads = observableListOf<String>(File("${Configuration.path.path}/downloads/").listFiles()?.map { it.name.takeIf { it.length == 64 } }?.filterNotNull() ?: listOf())
+
+    val hasDownloads = SimpleBooleanProperty()
+
+    val isDownloadMedia = SimpleBooleanProperty()
+    val isDownloadRss = SimpleBooleanProperty()
 
     fun clearIsPlaying () {
         castScopes.forEach {
-            it.episodesToDisplay.forEach {
+            it.model.items.forEach {
                 it.isPlaying.value = false
             }
         }
@@ -17,7 +32,7 @@ object CastView {
 
     fun clearDetail () {
         castScopes.forEach {
-            it.episodesToDisplay.forEach {
+            it.model.items.forEach {
                 it.detail.value = false
             }
         }

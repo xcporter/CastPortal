@@ -3,6 +3,7 @@ package controller
 import controller.Encoder.fileNameEncode
 import kotlinx.coroutines.*
 import model.CastScope
+import model.PrimaryViewModel
 import model.RSS
 import tornadofx.*
 import java.io.File
@@ -17,11 +18,12 @@ class Syndication : Controller(), CoroutineScope {
 
     init {
         rssFeeds.onChange {
-            CastView.castScopes.addAll(it.list.map { CastScope(it) } )
+            PrimaryViewModel.castScopes.addAll(it.list.map { CastScope(it) } )
         }
     }
 
     suspend fun refreshRss() = withContext(coroutineContext) {
+        PrimaryViewModel.isDownloadRss.value = true
         rssLinks.map { link ->
             launch {
                 client.downloadRss(link)?.let { rss ->
@@ -39,6 +41,7 @@ class Syndication : Controller(), CoroutineScope {
             ?.let {
                 withContext(Dispatchers.Main){ rssFeeds.addAll(it) }
             }
+        PrimaryViewModel.isDownloadRss.value = false
     }
 
     suspend fun loadExisting() = withContext(coroutineContext) {
@@ -52,6 +55,7 @@ class Syndication : Controller(), CoroutineScope {
             ?.let {
                 withContext(Dispatchers.Main){ rssFeeds.addAll(it) }
             }
+        PrimaryViewModel.isDownloadRss.value = false
     }
 
     suspend fun downloadImages(urls: List<String>) = withContext(coroutineContext) {

@@ -4,22 +4,14 @@ import BaseStyle.Companion.episode
 import BaseStyle.Companion.episodeButtons
 import BaseStyle.Companion.highlight
 import BaseStyle.Companion.primary
-import controller.*
-import controller.Encoder.fileNameEncode
+import controller.Playback
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
 import javafx.geometry.Pos
-import javafx.scene.control.Button
-import javafx.scene.image.Image
 import javafx.scene.layout.Priority
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import model.CastScope
 import model.EpisodeModel
 import tornadofx.*
-import java.net.URL
-import kotlin.coroutines.CoroutineContext
 
 class EpisodeFragment : Fragment() {
     override val scope = super.scope as CastScope
@@ -29,7 +21,24 @@ class EpisodeFragment : Fragment() {
     val playSymbol = FontAwesomeIconView(FontAwesomeIcon.PLAY_CIRCLE, "4em").apply { fill = c("#447F57") }
     val pauseSymbol = FontAwesomeIconView(FontAwesomeIcon.PAUSE_CIRCLE, "4em").apply { fill = c("#4B8D1C") }
 
-    var infoButton: Button by singleAssign()
+    val infoButton = button {
+        addClass(episodeButtons)
+        graphic = FontAwesomeIconView(FontAwesomeIcon.INFO_CIRCLE).apply { fill = primary }
+        action {
+            model.detail.value = !model.detail.value
+        }
+    }
+
+    val downloadButton = button {
+        addClass(episodeButtons)
+        graphic = FontAwesomeIconView(FontAwesomeIcon.DOWNLOAD).apply { fill = primary }
+        action {
+            if (model.isDownload.value) {
+                model.removeDownload()
+            } else { model.download() }
+        }
+    }
+
     init {
         model.isPlaying.onChange {
             if (it) {
@@ -46,6 +55,28 @@ class EpisodeFragment : Fragment() {
                 }
             } else {
                 infoButton.style {
+                    backgroundColor += highlight
+                }
+            }
+        }
+
+        if (model.isDownload.value) {
+            downloadButton.style {
+                backgroundColor += c("#5C7FB4")
+            }
+        } else {
+            downloadButton.style {
+                backgroundColor += highlight
+            }
+        }
+
+        model.isDownload.onChange {
+            if (it) {
+                downloadButton.style {
+                    backgroundColor += c("#5C7FB4")
+                }
+            } else {
+                downloadButton.style {
                     backgroundColor += highlight
                 }
             }
@@ -81,17 +112,8 @@ class EpisodeFragment : Fragment() {
                     fill = highlight
                 }
                 hbox(5.0) {
-                    button {
-                        addClass(episodeButtons)
-                        graphic = FontAwesomeIconView(FontAwesomeIcon.DOWNLOAD).apply { fill = primary }
-                    }
-                    infoButton = button {
-                        addClass(episodeButtons)
-                        graphic = FontAwesomeIconView(FontAwesomeIcon.INFO_CIRCLE).apply { fill = primary }
-                        action {
-                            model.detail.value = !model.detail.value
-                        }
-                    }
+                    add(downloadButton)
+                    add(infoButton)
                 }
             }
         }
@@ -115,8 +137,4 @@ class EpisodeFragment : Fragment() {
             }
         }
     }
-
-
-
-
 }

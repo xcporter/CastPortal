@@ -11,6 +11,7 @@ import javafx.util.Duration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import model.PrimaryViewModel
 import org.joda.time.format.PeriodFormatterBuilder
 import tornadofx.*
 import java.io.File
@@ -20,7 +21,8 @@ import kotlin.properties.Delegates.observable
 object Playback {
     val mediaLoadSupervisor = SupervisorJob()
 
-    val audio = SimpleObjectProperty<File>()
+//    Initial value is nonsense file so error can be displayed if anything returns null on first load
+    val audio = SimpleObjectProperty<File>(File("${Configuration.path.path}/nowPlaying/*"))
     val media = SimpleObjectProperty<Media>()
     val image = SimpleObjectProperty<Image>()
     var player: MediaPlayer? by observable(null) { _, _, new ->
@@ -60,9 +62,14 @@ object Playback {
     init {
         audio.onChange {
             it?.let {
-                media.value = Media(URL("file://${it.path}").toExternalForm())
-                player?.dispose()
-                player = MediaPlayer(media.value)
+                try {
+                    media.value = Media(URL("file://${it.path}").toExternalForm())
+                    player?.dispose()
+                    player = MediaPlayer(media.value)
+                    PrimaryViewModel.error.value = ""
+                } catch (e: Throwable) {
+                    println(e)
+                }
             }
         }
 

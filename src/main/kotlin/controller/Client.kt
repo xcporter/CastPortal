@@ -13,6 +13,7 @@ import io.ktor.http.isSuccess
 import io.ktor.util.cio.writeChannel
 import io.ktor.utils.io.copyAndClose
 import kotlinx.coroutines.*
+import model.PrimaryViewModel
 import tornadofx.*
 import java.io.File
 import java.net.URL
@@ -38,17 +39,54 @@ class Client : Controller() {
         } else null.also { println("${res.status} ${res.content}") }
     }
 
-    suspend fun downloadNowPlaying(url: String) : File? {
-        val file = File("${path.path}/nowPlaying/${url.fileNameEncode()}")
-        file.parentFile.mkdirs()
-        val res = client.request<HttpResponse> {
-            url(URL(url))
-            method = HttpMethod.Get
+    suspend fun downloadAudio(url: String) : File? {
+        try {
+            PrimaryViewModel.isDownloadMedia.value = true
+            val file = File("${path.path}/downloads/${url.fileNameEncode()}")
+            file.parentFile.mkdirs()
+            val res = client.request<HttpResponse> {
+                url(URL(url))
+                method = HttpMethod.Get
+            }
+            return if (res.status.isSuccess()) {
+                PrimaryViewModel.isDownloadMedia.value = false
+                println("download audio")
+                res.content.copyAndClose(file.writeChannel())
+                file
+            } else null
+                .also { println("${res.status} ${res.content}")
+                    PrimaryViewModel.isDownloadMedia.value = false
+                }
+        } catch(e: Throwable) {
+            if (e !is CancellationException){
+                PrimaryViewModel.error.value = "unable to download media"
+                PrimaryViewModel.isDownloadMedia.value = false
+            }
+            return null.also { println(e) }
         }
-        return if (res.status.isSuccess()) {
-            println("download now playing")
-            res.content.copyAndClose(file.writeChannel())
-            file
-        } else null.also { println("${res.status} ${res.content}") }
+    }
+
+    suspend fun downloadNowPlaying(url: String) : File? {
+        try {
+            val file = File("${path.path}/nowPlaying/${url.fileNameEncode()}")
+            file.parentFile.mkdirs()
+            val res = client.request<HttpResponse> {
+                url(URL(url))
+                method = HttpMethod.Get
+            }
+            return if (res.status.isSuccess()) {
+                println("download now playing")
+                res.content.copyAndClose(file.writeChannel())
+                file
+            } else null.also { println("${res.status} ${res.content}") }
+        } catch(e: Throwable) {
+            if (e !is CancellationException){
+                Playback.player?.dispose()
+                Playback.player = null
+                PrimaryViewModel.error.value = "unable to get audio stream"
+            }
+            return null.also { println(e) }
+        }
+
     }
 }

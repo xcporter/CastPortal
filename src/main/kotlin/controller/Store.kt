@@ -27,6 +27,10 @@ class Store : Controller(),  CoroutineScope {
         .listFiles()
         ?.let { it.map {it.name} } ?: listOf()
 
+    fun removeDownload(url: String) = File("${path.path}/downloads/${url.fileNameEncode()}").delete()
+
+    fun getFromDownloads(url: String): File? = File("${path.path}/downloads/${url.fileNameEncode()}").takeIf { it.exists() }
+
     fun clearNowPlaying() = File("${path.path}/nowPlaying/").listFiles()?.forEach { it.delete() }
 
     fun loadNowPlaying(url: String) = File("${path.path}/nowPlaying/${url.fileNameEncode()}").takeIf { it.exists() }

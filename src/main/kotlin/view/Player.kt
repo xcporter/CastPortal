@@ -1,22 +1,19 @@
 package view
 
-import BaseStyle.Companion.highlight
 import BaseStyle.Companion.midHigh
 import BaseStyle.Companion.player
 import BaseStyle.Companion.playerButtons
-import controller.CastView
+import controller.Configuration
 import controller.Playback
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
-import javafx.beans.InvalidationListener
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
-import javafx.scene.paint.Color
-import javafx.scene.text.TextAlignment
 import javafx.util.Duration
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import model.PrimaryViewModel
 import tornadofx.*
-import kotlin.coroutines.CoroutineContext
 
 class Player : View(), CoroutineScope {
     override val coroutineContext = Dispatchers.Main
@@ -57,7 +54,10 @@ class Player : View(), CoroutineScope {
                     graphic = FontAwesomeIconView(FontAwesomeIcon.BACKWARD, "2em").apply { fill = c("#3C447F")  }
                     action {
                         if ((Playback.player?.currentTime?.toSeconds() ?: 0.0) <= 1.0) {
-                            CastView.getPrevious()?.startPlayback()
+                            PrimaryViewModel.getPrevious()?.apply {
+                                startPlayback()
+                                if (scope.model.items.indexOf(this) < Configuration.displayNumberOfEpisodes) scope.isViewAll.value = false
+                            }
                         } else {
                             Playback.player?.seek(Duration.ZERO)
                         }
@@ -78,7 +78,7 @@ class Player : View(), CoroutineScope {
 
                     action {
                         Playback.player?.let { it.play() }
-                            ?: CastView.getFirst()?.startPlayback()
+                            ?: PrimaryViewModel.getFirst()?.startPlayback()
                     }
                     graphic = FontAwesomeIconView(FontAwesomeIcon.PLAY, "2em").apply { fill = c("#4B8D1C") }
                 }
@@ -103,16 +103,31 @@ class Player : View(), CoroutineScope {
                     addClass(playerButtons)
                     graphic = FontAwesomeIconView(FontAwesomeIcon.FORWARD, "2em").apply { fill = c("#3C447F")  }
                     action {
-                        CastView.getNext()?.startPlayback()
+                        PrimaryViewModel.getNext()?.apply {
+                            startPlayback()
+//                            Expand view if forwarded past initial displayNumberOfEpisodes
+                            if (!scope.episodesToDisplay.contains(this)) scope.isViewAll.value = true
+                        }
                     }
                 }
             }
             vbox {
                 hgrow = Priority.ALWAYS
-                text(Playback.timeText) {
-                    fill = c("#FFFFFF")
+                hbox {
+                    text(Playback.timeText) {
+                        fill = c("#FFFFFF")
+                        visibleWhen(!PrimaryViewModel.isError)
+                        managedWhen(!PrimaryViewModel.isError)
+                    }
+                    text(PrimaryViewModel.error) {
+                        fill = c("#FFFFFF")
+                    }
                 }
                 add(slider)
+            }
+            progressindicator {
+                visibleWhen(PrimaryViewModel.isDownloadMedia)
+                managedWhen(PrimaryViewModel.isDownloadMedia)
             }
         }
     }
