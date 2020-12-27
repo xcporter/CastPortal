@@ -1,6 +1,8 @@
 package controller
 
 import org.joda.time.Duration
+import org.jsoup.Jsoup
+import org.jsoup.safety.Whitelist
 import java.security.MessageDigest
 import java.util.*
 
@@ -29,4 +31,7 @@ object Encoder {
             "${it[2]} ${it[1]}, ${it[3]}"
         } ?: ""
     }
+
+    fun String?.stripHtml () : String = Jsoup.clean(this ?: "", Whitelist.none())
+
 }
