@@ -32,6 +32,6 @@ object Encoder {
         } ?: ""
     }
 
-    fun String?.stripHtml () : String = Jsoup.clean(this ?: "", Whitelist.none())
+    fun String?.stripHtml () : String = Jsoup.clean(this ?: "", Whitelist.none()).replace("&nbsp;", " ")
 
 }
