@@ -4,7 +4,9 @@ plugins {
 }
 
 group = 'com.xcporter'
-version = '1.0-SNAPSHOT'
+version = '0.0.1-beta'
+
+def jfxversion = "11.0.2"
 
 repositories {
     mavenCentral()
@@ -21,6 +23,22 @@ dependencies {
     implementation "joda-time:joda-time:2.10.6"
     implementation "io.ktor:ktor-client-apache:1.4.2"
 
+    compile "org.openjfx:javafx-base:$jfxversion:win"
+    compile "org.openjfx:javafx-graphics:$jfxversion:win"
+    compile "org.openjfx:javafx-controls:$jfxversion:win"
+    compile "org.openjfx:javafx-media:$jfxversion:win"
+    compile "org.openjfx:javafx-fxml:$jfxversion:win"
+    compile "org.openjfx:javafx-base:$jfxversion:mac"
+    compile "org.openjfx:javafx-graphics:$jfxversion:mac"
+    compile "org.openjfx:javafx-controls:$jfxversion:mac"
+    compile "org.openjfx:javafx-media:$jfxversion:mac"
+    compile "org.openjfx:javafx-fxml:$jfxversion:mac"
+    compile "org.openjfx:javafx-base:$jfxversion:linux"
+    compile "org.openjfx:javafx-graphics:$jfxversion:linux"
+    compile "org.openjfx:javafx-controls:$jfxversion:linux"
+    compile "org.openjfx:javafx-media:$jfxversion:linux"
+    compile "org.openjfx:javafx-fxml:$jfxversion:linux"
+
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
@@ -30,15 +48,21 @@ test {
     useJUnitPlatform()
 }
 
-javafx {
-    version = "11.0.2"
-    modules = ['javafx.controls', 'javafx.graphics', 'javafx.media']
-}
-
 compileKotlin {
     kotlinOptions.jvmTarget = '11'
 }
 
 compileTestKotlin {
     kotlinOptions.jvmTarget = '11'
+}
+
+task fatJar(type: Jar) {
+    baseName 'castportal'
+    manifest {
+        attributes "Main-Class": "MainKt"
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
 }

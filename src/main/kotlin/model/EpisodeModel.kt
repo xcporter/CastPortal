@@ -76,7 +76,7 @@ class EpisodeModel(init: RssItem, override val scope: CastScope) : ViewModel(), 
                     Playback.audio.value = nowPlaying
                     isPlaying.value = true
                     Playback.image.value =
-                        Image(URL("file://${Configuration.path.path}/images/${scope.model.imageUrl.value}").toExternalForm())
+                        Image(URL("file:///${Configuration.path.path}/images/${scope.model.imageUrl.value}").toExternalForm())
                     Playback.titleText.value = title.value
                     Playback.authorText.value = author.value
                 }
@@ -98,7 +98,7 @@ class EpisodeModel(init: RssItem, override val scope: CastScope) : ViewModel(), 
                     PrimaryViewModel.clearIsPlaying()
                     isPlaying.value = true
                     Playback.image.value =
-                        Image(URL("file://${Configuration.path.path}/images/${scope.model.imageUrl.value}").toExternalForm())
+                        Image(URL("file:///${Configuration.path.path}/images/${scope.model.imageUrl.value}").toExternalForm())
                     Playback.titleText.value = title.value
                     Playback.authorText.value = author.value
                     Playback.player?.play()
@@ -123,7 +123,7 @@ class EpisodeModel(init: RssItem, override val scope: CastScope) : ViewModel(), 
                 }
                 Playback.player?.play()
                 Playback.image.value =
-                    Image(URL("file://${Configuration.path.path}/images/${scope.model.imageUrl.value}").toExternalForm())
+                    Image(URL("file:///${Configuration.path.path}/images/${scope.model.imageUrl.value}").toExternalForm())
                 Playback.titleText.value = title.value
                 Playback.authorText.value = author.value
             }

@@ -21,6 +21,7 @@ import model.EpisodeModel
 import model.SyndicationModel
 import tornadofx.*
 import java.io.File
+import java.net.URL
 
 class CastFragment() : Fragment(), CoroutineScope {
     override val scope = super.scope as CastScope
@@ -130,7 +131,7 @@ class CastFragment() : Fragment(), CoroutineScope {
                 }
                 withContext(Dispatchers.Main) {
                     imageContainer.add(
-                        imageview("file://${Configuration.path.path}/images/${scope.model.imageUrl.value}") {
+                        imageview(URL("file:///${Configuration.path.path}/images/${scope.model.imageUrl.value}").toExternalForm()) {
                             fitWidth = 150.0
                             fitHeight = 150.0
                         }
