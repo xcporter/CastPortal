@@ -5,7 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 interface RssContainer
 
-data class RSS(val channel : Channel? = null) : RssContainer
+data class RSS(val channel : Channel? = null) : RssContainer {
+    fun validate() : Boolean {
+        return !channel?.title.isNullOrBlank()
+                && channel?.items?.isEmpty() == false
+    }
+}
 
 data class Channel(var title: String? = null,
                    var link: String? = null,
