@@ -15,5 +15,16 @@ object RssParser {
         .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
-    fun File.parseRss() : RSS = mapper.readValue(this.readText())
+    fun File?.parseRss(): RSS? {
+        return try {
+            this?.let {
+                mapper.readValue(it.readText())
+            }
+        } catch (e: Throwable) {
+            println(e)
+            null
+        }
+    }
+
+    fun String?.parseRss(): RSS? = this?.let { mapper.readValue(it) }
 }

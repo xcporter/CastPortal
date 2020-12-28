@@ -1,6 +1,8 @@
 package controller
 
+import controller.Configuration.path
 import controller.Encoder.fileNameEncode
+import controller.RssParser.parseRss
 import kotlinx.coroutines.*
 import model.CastScope
 import model.PrimaryViewModel
@@ -11,19 +13,21 @@ import java.io.File
 class Syndication : Controller(), CoroutineScope {
     val job = SupervisorJob()
     override val coroutineContext = Dispatchers.IO + job
-    val rssLinks = observableListOf<String>("https://feeds.npr.org/510312/podcast.xml", "https://rss.art19.com/1619", "http://joeroganexp.joerogan.libsynpro.com/rss", "https://feeds.megaphone.fm/ADL9840290619", "https://feeds.megaphone.fm/unlocking-us")
-    val rssFeeds = observableListOf<RSS>()
+
     val client: Client by inject()
     val store: Store by inject()
 
+    val rssLinks = observableListOf<String>(store.getSubscriptions() ?: Configuration.defaultStreams.also { store.saveSubscriptions(it) })
+    val rssFeeds = observableListOf<RSS>()
+
     init {
         rssFeeds.onChange {
+            PrimaryViewModel.castScopes.clear()
             PrimaryViewModel.castScopes.addAll(it.list.map { CastScope(it) } )
         }
     }
 
     suspend fun refreshRss() = withContext(coroutineContext) {
-        PrimaryViewModel.isDownloadRss.value = true
         rssLinks.map { link ->
             launch {
                 client.downloadRss(link)?.let { rss ->
@@ -34,21 +38,20 @@ class Syndication : Controller(), CoroutineScope {
         store
             .listStoredRss()
             .takeUnless { it.isEmpty() }
-            ?.map { store.loadRssText(it) }
+            ?.mapNotNull { store.loadRssText(it) }
             ?.also {
                 withContext(Dispatchers.Main){ rssFeeds.clear() }
             }
             ?.let {
                 withContext(Dispatchers.Main){ rssFeeds.addAll(it) }
             }
-        PrimaryViewModel.isDownloadRss.value = false
     }
 
     suspend fun loadExisting() = withContext(coroutineContext) {
         store
             .listStoredRss()
             .takeUnless { it.isEmpty() }
-            ?.map { store.loadRssText(it) }
+            ?.mapNotNull { store.loadRssText(it) }
             ?.also {
                 withContext(Dispatchers.Main){ rssFeeds.clear() }
             }
@@ -66,8 +69,28 @@ class Syndication : Controller(), CoroutineScope {
 
     suspend fun checkMissingImages() : List<String> = withContext(coroutineContext) {
         return@withContext rssFeeds
-            .filter { !(File("${Configuration.path.path}/images/${it.channel?.image?.href?.fileNameEncode()}").exists()) }
+            .filter { !(File("${path.path}/images/${it.channel?.image?.href?.fileNameEncode()}").exists()) }
             .mapNotNull { it.channel?.image?.href }
     }
 
+    suspend fun removeRss(url: String) {
+        File("${path.path}/rss/${url.fileNameEncode()}").delete()
+        rssLinks.indexOf(url).let {
+            store.deleteAllDownloads(rssFeeds[it])
+            withContext(Dispatchers.Main) {
+                rssFeeds.removeAt(it)
+                rssLinks.remove(url)
+            }
+        }
+        store.saveSubscriptions(rssLinks)
+    }
+
+    suspend fun validateStream (url: String) : Boolean {
+        return try {
+            client.downloadRss(url)?.parseRss()?.validate() ?: false
+        } catch(e: Throwable) {
+            println(e)
+            false
+        }
+    }
 }
