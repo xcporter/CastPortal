@@ -14,6 +14,9 @@ class BaseStyle : Stylesheet() {
         val playButton by cssclass()
         val moreEpisodes by cssclass()
         val playerButtons by cssclass()
+        val delete by cssclass()
+        val simpleDelete by cssclass()
+        val simpleAdd by cssclass()
 
         val textColor = c("#FFFFFF")
         val primary = c("#3C3C3F")
@@ -101,6 +104,45 @@ class BaseStyle : Stylesheet() {
 
             and (pressed) {
                 backgroundColor += Color.WHITE
+            }
+        }
+
+        delete {
+            fontSize = 2.em
+            backgroundColor += Color.TRANSPARENT
+            borderRadius += box(4.px)
+            backgroundRadius += box(4.px)
+            backgroundInsets += box(2.px)
+            borderWidth += box(2.px)
+            borderColor += box(c("#C24C2B"))
+            textFill = c("#C24C2B")
+
+            and (hover) {
+                backgroundColor += mid
+            }
+
+            and (pressed) {
+                backgroundColor += Color.WHITE
+            }
+        }
+
+        simpleDelete {
+            backgroundColor += Color.TRANSPARENT
+            and (hover) {
+                backgroundColor += primary
+            }
+            and (pressed) {
+                backgroundColor += shadow
+            }
+        }
+
+        simpleAdd {
+            backgroundColor += Color.TRANSPARENT
+            and (hover) {
+                backgroundColor += mid
+            }
+            and (pressed) {
+                backgroundColor += shadow
             }
         }
 
