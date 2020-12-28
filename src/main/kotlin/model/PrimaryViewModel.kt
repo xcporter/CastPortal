@@ -17,9 +17,10 @@ object PrimaryViewModel {
 
     val downloads = observableListOf<String>(File("${Configuration.path.path}/downloads/").listFiles()?.map { it.name.takeIf { it.length == 64 } }?.filterNotNull() ?: listOf())
 
-    val hasDownloads = SimpleBooleanProperty()
+    val hasDownloads = SimpleBooleanProperty(downloads.isNotEmpty())
 
     val isDownloadMedia = SimpleBooleanProperty()
+    val isLoadNew = SimpleBooleanProperty()
     val isDownloadRss = SimpleBooleanProperty()
 
     fun clearIsPlaying () {

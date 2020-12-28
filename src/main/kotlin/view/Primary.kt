@@ -79,12 +79,14 @@ class Primary() : View ("Cast Portal"), CoroutineScope {
 
     override fun onBeforeShow() {
         launch {
+            PrimaryViewModel.isDownloadRss.value = true
             try {
                 syndication.refreshRss()
             } catch (e: Throwable) {
-                withContext(Dispatchers.Main) { println(e) }
+                println(e)
                 syndication.loadExisting()
             } finally {
+                PrimaryViewModel.isDownloadRss.value = false
                 syndication.downloadImages(syndication.checkMissingImages())
             }
         }
