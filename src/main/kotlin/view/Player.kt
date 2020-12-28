@@ -125,6 +125,7 @@ class Player : View(), CoroutineScope {
                 }
                 add(slider)
             }
+            add<Volume>()
             progressindicator {
                 visibleWhen(PrimaryViewModel.isDownloadMedia)
                 managedWhen(PrimaryViewModel.isDownloadMedia)

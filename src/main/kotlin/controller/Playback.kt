@@ -44,16 +44,23 @@ object Playback {
             setOnStopped {
                 isPlaying.value = false
             }
+
+            volumeProperty.bindBidirectional(volumeProperty())
         }
     }
 
     val isPlaying = SimpleBooleanProperty(false)
+
+    val isMute = SimpleBooleanProperty(false)
 
     val timeText = SimpleStringProperty()
 
     val titleText = SimpleStringProperty()
 
     val authorText = SimpleStringProperty()
+
+    val volumeProperty = SimpleDoubleProperty(1.0)
+    var prevVolume = 0.0
 
     val sliderOutProperty = SimpleDoubleProperty(0.0)
 
@@ -63,7 +70,7 @@ object Playback {
         audio.onChange {
             it?.let {
                 try {
-                    media.value = Media(URL("file://${it.path}").toExternalForm())
+                    media.value = Media(URL("file:///${it.path}").toExternalForm())
                     player?.dispose()
                     player = MediaPlayer(media.value)
                     PrimaryViewModel.error.value = ""
@@ -75,6 +82,15 @@ object Playback {
 
         sliderInProperty.onChange {
             player?.seek(Duration(it * media.value?.duration?.toMillis()!!))
+        }
+
+        isMute.onChange {
+            if (it) {
+                prevVolume = volumeProperty.value
+                volumeProperty.value = 0.0
+            } else {
+                volumeProperty.value = prevVolume
+            }
         }
     }
 
