@@ -1,12 +1,25 @@
-plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.4.10'
-    id 'org.openjfx.javafxplugin' version '0.0.8'
+buildscript {
+    repositories {
+        maven {
+            url  "https://dl.bintray.com/xcporter/jpkg"
+        }
+    }
+    dependencies {
+        classpath 'com.xcporter:jpkg:0.0.1-beta'
+    }
 }
 
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+}
+
+apply plugin: 'com.xcporter.jpkg'
 group = 'com.xcporter'
 version = '0.0.1-beta'
 
-def jfxversion = "11.0.2"
+mainClassName = "MainKt"
+
 
 repositories {
     mavenCentral()
@@ -22,22 +35,6 @@ dependencies {
     implementation "org.jsoup:jsoup:1.13.1"
     implementation "joda-time:joda-time:2.10.6"
     implementation "io.ktor:ktor-client-apache:1.4.2"
-
-    compile "org.openjfx:javafx-base:$jfxversion:win"
-    compile "org.openjfx:javafx-graphics:$jfxversion:win"
-    compile "org.openjfx:javafx-controls:$jfxversion:win"
-    compile "org.openjfx:javafx-media:$jfxversion:win"
-    compile "org.openjfx:javafx-fxml:$jfxversion:win"
-    compile "org.openjfx:javafx-base:$jfxversion:mac"
-    compile "org.openjfx:javafx-graphics:$jfxversion:mac"
-    compile "org.openjfx:javafx-controls:$jfxversion:mac"
-    compile "org.openjfx:javafx-media:$jfxversion:mac"
-    compile "org.openjfx:javafx-fxml:$jfxversion:mac"
-    compile "org.openjfx:javafx-base:$jfxversion:linux"
-    compile "org.openjfx:javafx-graphics:$jfxversion:linux"
-    compile "org.openjfx:javafx-controls:$jfxversion:linux"
-    compile "org.openjfx:javafx-media:$jfxversion:linux"
-    compile "org.openjfx:javafx-fxml:$jfxversion:linux"
 
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
@@ -56,13 +53,29 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = '11'
 }
 
-task fatJar(type: Jar) {
-    baseName 'castportal'
-    manifest {
-        attributes "Main-Class": "MainKt"
+javafx {
+    version = '13'
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.media', 'javafx.graphics']
+}
+
+jpkg {
+    packageName = "CastPortal"
+    vendor = "Alexander Porter"
+    copyright = "2021"
+    description = "Minimalist Podcatcher"
+    resourceDir = "./src/main/resources/icons/"
+    menuGroup = "Podcast Farm"
+    mac {
+        icon = "src/main/resources/icons/Logo_Red.icns"
+        name = "Cast Portal"
+        signingIdentity = System.getenv('IDENTITY')
+        bundleName = "com.xcporter.castportal"
     }
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    windows {
+        icon = "src/main/resources/icons/Logo_Red.ico"
     }
-    with jar
+    linux {
+        icon = "src/main/resources/icons/Logo_Red.png"
+        packageDependencies = ["openjfx"]
+    }
 }
