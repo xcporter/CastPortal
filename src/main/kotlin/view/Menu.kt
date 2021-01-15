@@ -9,6 +9,7 @@ import controller.Playback
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
 import javafx.geometry.Pos
+import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
@@ -20,15 +21,16 @@ import tornadofx.*
 class Menu : View() {
     var container : ImageView by singleAssign()
 
-    override val root = vbox(10.0) {
+    override val root = vbox {
         addClass(menu)
         hbox {
             alignment = Pos.CENTER
-            text("[YOUR LOGO HERE]") {
-                style {
-                    fontSize = 18.px
-                    fill = c("#59595C")
-                }
+            style {
+                padding = box(10.px)
+            }
+            imageview("/icons/Logo_Red.png") {
+                isPreserveRatio = true
+                fitWidth = 150.0
             }
         }
 

@@ -22,7 +22,7 @@ object Playback {
     val mediaLoadSupervisor = SupervisorJob()
 
 //    Initial value is nonsense file so error can be displayed if anything returns null on first load
-    val audio = SimpleObjectProperty<File>(File("${Configuration.path.path}/nowPlaying/*"))
+    val audio = SimpleObjectProperty<File>(File("file:///${Configuration.path.path}/nowPlaying/*"))
     val media = SimpleObjectProperty<Media>()
     val image = SimpleObjectProperty<Image>()
     var player: MediaPlayer? by observable(null) { _, _, new ->
@@ -70,12 +70,13 @@ object Playback {
         audio.onChange {
             it?.let {
                 try {
-                    media.value = Media(URL("file:///${it.path}").toExternalForm())
+                    media.value = Media(it.toURI().toString())
                     player?.dispose()
                     player = MediaPlayer(media.value)
                     PrimaryViewModel.error.value = ""
                 } catch (e: Throwable) {
                     println(e)
+                    e.printStackTrace()
                 }
             }
         }
