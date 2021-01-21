@@ -5,6 +5,7 @@ import java.io.File
 object Configuration {
     var path = File("${System.getProperty("user.home")}/.castportal")
     var displayNumberOfEpisodes : Int = 5
+    val platform = System.getProperty("os.name")
 
     val defaultStreams = listOf (
         "https://feeds.npr.org/510312/podcast.xml",
