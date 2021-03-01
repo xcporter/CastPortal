@@ -1,0 +1,12 @@
+pool:
+  vmImage: 'windows-2019'
+
+container: adoptopenjdk:15-jdk-hotspot
+
+steps:
+- task: Gradle@2
+  inputs:
+    tasks: executableJar
+- task: PublishPipelineArtifact@1
+  inputs:
+    pathToPublish: 'CastPortal/build/jpkg/jar/CastPortal-0.0.1-beta.jar'

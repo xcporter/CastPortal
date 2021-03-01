@@ -1,20 +1,9 @@
-buildscript {
-    repositories {
-        maven {
-            url  "https://dl.bintray.com/xcporter/maven"
-        }
-    }
-    dependencies {
-        classpath 'com.xcporter:jpkg:0.0.1-beta'
-    }
-}
-
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.4.10'
     id 'org.openjfx.javafxplugin' version '0.0.9'
+    id 'com.xcporter.jpkg' version '0.0.4-beta'
 }
 
-apply plugin: 'com.xcporter.jpkg'
 group = 'com.xcporter'
 version = '0.0.1-beta'
 

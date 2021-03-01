@@ -1,0 +1,3 @@
+FROM adoptopenjdk:15-jdk-hotspot-windowsservercore
+RUN powershell Install-WindowsFeature Net-Framework-Core
+RUN choco install wixtoolset

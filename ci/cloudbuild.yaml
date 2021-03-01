@@ -1,0 +1,21 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/utopiaplanitia/linuxbuilder', '-f', './ci/Linux', '.']
+    waitFor: ['-']
+    id: L
+  - name: 'gcr.io/utopiaplanitia/linuxbuilder'
+    args: ['./gradlew', 'jpackageBuild']
+    waitFor:
+    - L
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/utopiaplanitia/windowsbuilder', '-f', './ci/Windows', '.']
+    waitFor: [ '-' ]
+    id: W
+  - name: 'gcr.io/utopiaplanitia/windowsbuilder'
+    args: [ './gradlew', 'jpackageBuild' ]
+    waitFor:
+    - W
+artifacts:
+  objects:
+    location: 'gs://xcp-release/$REPO_NAME'
+    paths: ['./build/jpkg/linux/*']
