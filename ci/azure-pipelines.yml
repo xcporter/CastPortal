@@ -6,7 +6,11 @@ container: adoptopenjdk:15-jdk-hotspot
 steps:
 - task: Gradle@2
   inputs:
+    displayName: Build
     tasks: executableJar
 - task: PublishPipelineArtifact@1
   inputs:
-    pathToPublish: 'CastPortal/build/jpkg/jar/CastPortal-0.0.1-beta.jar'
+    displayName: store artifact
+    targetPath: './build/jpkg/jar/CastPortal-0.0.1-beta.jar'
+    artifactType: filepath
+    fileSharePath: '/results'
