@@ -1,4 +1,4 @@
-package view
+package view.fragments
 
 import BaseStyle.Companion.episode
 import BaseStyle.Companion.episodeButtons

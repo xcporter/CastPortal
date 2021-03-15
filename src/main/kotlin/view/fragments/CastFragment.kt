@@ -1,24 +1,16 @@
-package view
+package view.fragments
 
 import BaseStyle.Companion.highlight
 import BaseStyle.Companion.midHigh
 import BaseStyle.Companion.moreEpisodes
 import BaseStyle.Companion.primary
-import BaseStyle.Companion.shadow
 import controller.Configuration
-import javafx.beans.property.SimpleBooleanProperty
 import javafx.geometry.Pos
 import javafx.scene.effect.DropShadow
-import javafx.scene.layout.BorderStrokeStyle
 import javafx.scene.layout.HBox
-import javafx.scene.layout.Priority
-import javafx.scene.layout.VBox
-import javafx.scene.paint.Color
 import javafx.scene.text.TextAlignment
 import kotlinx.coroutines.*
 import model.CastScope
-import model.EpisodeModel
-import model.SyndicationModel
 import tornadofx.*
 import java.io.File
 import java.net.URL

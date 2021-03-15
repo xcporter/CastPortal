@@ -1,4 +1,4 @@
-package view
+package view.fragments
 
 import BaseStyle.Companion.nowPlaying
 import BaseStyle.Companion.shadow

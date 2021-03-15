@@ -1,8 +1,7 @@
-package view
+package view.fragments
 
 import BaseStyle.Companion.highlight
 import BaseStyle.Companion.midHigh
-import BaseStyle.Companion.moreEpisodes
 import BaseStyle.Companion.primary
 import controller.Configuration
 import javafx.geometry.Pos

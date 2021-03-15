@@ -7,6 +7,7 @@ import javafx.scene.control.ScrollPane
 import javafx.scene.layout.Priority
 import model.PrimaryViewModel
 import tornadofx.*
+import view.fragments.DownloadCastFragment
 
 class Downloads : View() {
     override val root = scrollpane {
