@@ -7,10 +7,12 @@ import BaseStyle.Companion.primary
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
 import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleObjectProperty
 import javafx.geometry.Pos
 import javafx.scene.control.ScrollPane
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
+import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
 import model.PrimaryViewModel
 import model.ShowDescription
@@ -42,29 +44,27 @@ class Home : View() {
         }
     }
 
+    val gridButtonFill = SimpleObjectProperty<Color>(Color.ORANGE)
+
+    val listButtonFill = SimpleObjectProperty<Color>(highlight)
+
     init {
-        subscribe<ShowDescription> {
-            openInternalWindow<CastInfoFragment>(
-                icon = hbox {
-                    style { padding = box(0.px, 10.px) }
-                    text("${it.title} by ${it.author}") {
-                        style { fontSize = 2.em }
-                        wrappingWidth = 400.0
-                    }
-                },
-                movable = false,
-                params = mapOf("info" to it.description)
-            )
-        }
 
         PrimaryViewModel.castArrangementState.onChange {
             it?.let {
-                displayPanel.replaceChildren (
-                    when(it) {
-                        CastArrangement.LIST -> listPanel
-                        CastArrangement.GRID -> gridPanel
+                when(it) {
+                    CastArrangement.LIST -> {
+                        displayPanel.replaceChildren(listPanel)
+                        listButtonFill.value = Color.ORANGE
+                        gridButtonFill.value = highlight
                     }
-                )
+                    CastArrangement.GRID -> {
+                        displayPanel.replaceChildren(gridPanel)
+                        listButtonFill.value = highlight
+                        gridButtonFill.value = Color.ORANGE
+                    }
+                }
+
             }
         }
     }
@@ -78,13 +78,21 @@ class Home : View() {
                 style {
                     padding = box(5.px, 10.px)
                 }
+                label("Offline") {
+                    visibleWhen { PrimaryViewModel.offlineMode }
+                    style {
+                        textFill = midHigh
+                        fontSize = 2.em
+                    }
+                }
+                region { hgrow = Priority.ALWAYS }
                 button {
                     addClass(invisibleButtons)
                     graphic = cache {
                         vbox(2.0) {
                             repeat(3) {
                                 hbox(2.0) {
-                                    repeat(3) { rectangle(0, 0, 5.0, 5.0) { fill = highlight } }
+                                    repeat(3) { rectangle(0, 0, 5.0, 5.0) { fillProperty().bind(gridButtonFill) } }
                                 }
                             }
                         }
@@ -96,7 +104,7 @@ class Home : View() {
                 button {
                     addClass(invisibleButtons)
                     graphic = FontAwesomeIconView(FontAwesomeIcon.LIST_UL, "1.8em").apply {
-                        fill = highlight
+                        fillProperty().bind(listButtonFill)
                     }
                     action {
                         PrimaryViewModel.castArrangementState.value = CastArrangement.LIST
