@@ -10,6 +10,7 @@ class BaseStyle : Stylesheet() {
         val menu by cssclass()
         val menubuttons by cssclass()
         val episodeButtons by cssclass()
+        val invisibleButtons by cssclass()
         val episode by cssclass()
         val playButton by cssclass()
         val moreEpisodes by cssclass()
@@ -45,6 +46,15 @@ class BaseStyle : Stylesheet() {
         episodeButtons {
             borderRadius += box(0.px)
             backgroundColor += highlight
+            textFill = highlight
+            and(hover) {
+                backgroundColor += midHigh
+            }
+        }
+
+        invisibleButtons {
+            borderRadius += box(0.px)
+            backgroundColor += Color.TRANSPARENT
             textFill = highlight
             and(hover) {
                 backgroundColor += midHigh

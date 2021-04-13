@@ -4,7 +4,9 @@ import controller.Configuration
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import tornadofx.*
 import java.io.File
 
@@ -12,6 +14,8 @@ object PrimaryViewModel {
     val backgroundJobs = SupervisorJob()
     val castScopes = observableListOf<CastScope>()
     val viewState = SimpleObjectProperty(ViewState.HOME)
+    val detailView = SimpleObjectProperty<CastScope>(null)
+    val castArrangementState = SimpleObjectProperty(CastArrangement.GRID)
     val error = SimpleStringProperty()
     val isError = error.booleanBinding() { !it.isNullOrBlank() }
 

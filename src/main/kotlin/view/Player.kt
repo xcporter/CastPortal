@@ -56,7 +56,6 @@ class Player : View(), CoroutineScope {
                         if ((Playback.player?.currentTime?.toSeconds() ?: 0.0) <= 1.0) {
                             PrimaryViewModel.getPrevious()?.apply {
                                 startPlayback()
-                                if (scope.model.items.indexOf(this) < Configuration.displayNumberOfEpisodes) scope.isViewAll.value = false
                             }
                         } else {
                             Playback.player?.seek(Duration.ZERO)
@@ -105,8 +104,6 @@ class Player : View(), CoroutineScope {
                     action {
                         PrimaryViewModel.getNext()?.apply {
                             startPlayback()
-//                            Expand view if forwarded past initial displayNumberOfEpisodes
-                            if (!scope.episodesToDisplay.contains(this)) scope.isViewAll.value = true
                         }
                     }
                 }
