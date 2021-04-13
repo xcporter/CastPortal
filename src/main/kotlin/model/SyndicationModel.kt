@@ -21,5 +21,9 @@ class SyndicationModel (init: RSS, override val scope: CastScope) : ViewModel() 
             if (it) PrimaryViewModel.hasDownloads.value = true
             else PrimaryViewModel.hasDownloads.value = PrimaryViewModel.castScopes.any { it.model.hasDownloads.value }
         }
+
+        subscribe<RenderDownloads> {
+            downloaded.setAll(items.filter { it.isDownload.value })
+        }
     }
 }

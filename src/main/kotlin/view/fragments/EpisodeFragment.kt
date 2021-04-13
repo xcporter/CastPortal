@@ -11,6 +11,7 @@ import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import model.CastScope
 import model.EpisodeModel
+import model.RenderDownloads
 import tornadofx.*
 
 class EpisodeFragment : Fragment() {
@@ -28,6 +29,7 @@ class EpisodeFragment : Fragment() {
             if (model.isDownload.value) {
                 model.removeDownload()
             } else { model.download() }
+            fire(RenderDownloads())
         }
     }
 

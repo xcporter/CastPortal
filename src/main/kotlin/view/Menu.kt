@@ -2,18 +2,13 @@ package view
 
 import BaseStyle.Companion.menu
 import BaseStyle.Companion.menubuttons
-import BaseStyle.Companion.midHigh
 import BaseStyle.Companion.nowPlaying
-import BaseStyle.Companion.textColor
 import controller.Playback
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
 import javafx.geometry.Pos
-import javafx.scene.image.Image
 import javafx.scene.image.ImageView
-import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
-import javafx.scene.paint.Color
 import javafx.scene.text.TextAlignment
 import model.PrimaryViewModel
 import tornadofx.*
@@ -38,7 +33,7 @@ class Menu : View() {
             addClass(menubuttons)
             useMaxWidth = true
             PrimaryViewModel.viewState.onChange {
-                if (it == ViewState.DETAIL) activeItem = null
+                if (it == ViewState.DETAIL || it == ViewState.DETAIL_DOWNLOAD) activeItem = null
             }
             item("Home", FontAwesomeIconView(FontAwesomeIcon.HOME, "2em")) {
                 whenSelected { PrimaryViewModel.viewState.value = ViewState.HOME }

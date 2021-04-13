@@ -17,6 +17,7 @@ import java.net.URL
 class ListFragment : Fragment(), CoroutineScope {
     override val scope = super.scope as CastScope
     override val coroutineContext = Dispatchers.IO
+    private val downloadsOnly: Boolean by param(false)
 
     val imageContainer = hbox {}
 
@@ -39,7 +40,7 @@ class ListFragment : Fragment(), CoroutineScope {
             padding = box(10.px)
         }
         onLeftClick {
-            PrimaryViewModel.setDetail(scope)
+            PrimaryViewModel.setDetail(scope, downloadsOnly)
         }
         add(imageContainer)
         vbox {

@@ -1,16 +1,12 @@
 package view
 
-import BaseStyle.Companion.midHigh
-import BaseStyle.Companion.primary
 import model.PrimaryViewModel
 import controller.Client
 import controller.Playback
 import controller.Store
 import controller.Syndication
 import javafx.geometry.Pos
-import javafx.scene.control.ScrollPane
 import javafx.scene.layout.Priority
-import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,9 +36,24 @@ class Primary() : View ("Cast Portal"), CoroutineScope {
                         ViewState.DOWNLOADS -> find<Downloads>().root
                         ViewState.SETTINGS -> find<Settings>().root
                         ViewState.DETAIL -> find<CastFragment>(PrimaryViewModel.detailView.value).root
+                        ViewState.DETAIL_DOWNLOAD -> find<CastFragment>(PrimaryViewModel.detailView.value, mapOf("downloadsOnly" to true)).root
                     }
                 )
             }
+        }
+
+        subscribe<ShowDescription> {
+            openInternalWindow<CastInfoFragment>(
+                icon = hbox {
+                    style { padding = box(0.px, 10.px) }
+                    text("${it.title} by ${it.author}") {
+                        style { fontSize = 2.em }
+                        wrappingWidth = 400.0
+                    }
+                },
+                movable = false,
+                params = mapOf("info" to it.description)
+            )
         }
     }
 
@@ -85,6 +96,7 @@ class Primary() : View ("Cast Portal"), CoroutineScope {
                 syndication.refreshRss()
             } catch (e: Throwable) {
                 println(e)
+                PrimaryViewModel.setError("unable to access new rss feed(s); using existing")
                 syndication.loadExisting()
             } finally {
                 PrimaryViewModel.isDownloadRss.value = false
