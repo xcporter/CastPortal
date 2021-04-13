@@ -1,23 +1,32 @@
 package model
 
 import controller.Configuration
+import controller.Syndication
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import tornadofx.*
 import java.io.File
+import kotlin.coroutines.CoroutineContext
 
-object PrimaryViewModel {
+object PrimaryViewModel : CoroutineScope {
     val backgroundJobs = SupervisorJob()
+    override val coroutineContext: CoroutineContext = Dispatchers.IO
     val castScopes = observableListOf<CastScope>()
     val viewState = SimpleObjectProperty(ViewState.HOME)
     val detailView = SimpleObjectProperty<CastScope>(null)
     val castArrangementState = SimpleObjectProperty(CastArrangement.GRID)
     val error = SimpleStringProperty()
     val isError = error.booleanBinding() { !it.isNullOrBlank() }
+
+    val offlineMode = SimpleBooleanProperty(false)
+
+    init {
+        offlineMode.onChange {
+            if (it) launchOfflineLoop()
+        }
+    }
 
     val downloads = observableListOf<String>(File("${Configuration.path.path}/downloads/")
         .listFiles()
@@ -39,9 +48,9 @@ object PrimaryViewModel {
         }
     }
 
-    fun setDetail(scope: CastScope) {
+    fun setDetail(scope: CastScope, isDownload: Boolean = false) {
         detailView.value = scope
-        viewState.value = ViewState.DETAIL
+        viewState.value = if (isDownload) ViewState.DETAIL_DOWNLOAD else ViewState.DETAIL
     }
 
     fun getFirst () = castScopes.first().model.items.firstOrNull()
@@ -64,4 +73,41 @@ object PrimaryViewModel {
             it.currentTitle.value = ""
             it.currentDescription.value = ""
         }
+
+    fun setError(error: String) =
+        launch {
+            withContext(Dispatchers.Main) { PrimaryViewModel.error.value = error }
+            offlineMode.value = true
+            delay(Configuration.errorReadTime)
+            withContext(Dispatchers.Main) { PrimaryViewModel.error.value = "" }
+        }
+
+    fun launchOfflineLoop() =
+        launch(coroutineContext + backgroundJobs) {
+            var attempts = 0
+            while(offlineMode.value && isActive && attempts < Configuration.maxAttempts) {
+                try {
+                    println("trying to use internet...${attempts} / ${Configuration.maxAttempts}")
+                    if (find<Syndication>().refreshRss() == true) {
+                        offlineMode.value = false
+                    }
+                } catch (e: Throwable) {
+                    attempts++
+                    delay(Configuration.retryIntervals[attempts scaleDelay Configuration.maxAttempts])
+                }
+            }
+        }
+
+    private infix fun Int.scaleDelay(maxDelay: Int) : Int {
+        return (maxDelay/16).let { step ->
+            when(this) {
+                in 0..step -> 0
+                in step..(2*step) -> 1
+                in (2*step)..(4*step) -> 2
+                in (4*step)..(8*step) -> 3
+                else -> 4
+            }
+        }
+    }
+
 }

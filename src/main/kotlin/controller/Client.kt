@@ -19,7 +19,7 @@ import tornadofx.*
 import java.io.File
 import java.net.URL
 
-class Client : Controller() {
+class Client : Controller(){
     val client = HttpClient(Apache) {
         expectSuccess = false
     }
@@ -71,7 +71,7 @@ class Client : Controller() {
                 }
         } catch(e: Throwable) {
             if (e !is CancellationException){
-                PrimaryViewModel.error.value = "unable to download media"
+                PrimaryViewModel.setError("unable to download media")
                 PrimaryViewModel.isDownloadMedia.value = false
             }
             return null.also { println(e) }
@@ -106,7 +106,7 @@ class Client : Controller() {
             if (e !is CancellationException){
                 Playback.player?.dispose()
                 Playback.player = null
-                PrimaryViewModel.error.value = "unable to get audio stream"
+                PrimaryViewModel.setError("unable to get audio stream")
             }
             return null.also { println(e) }
         }

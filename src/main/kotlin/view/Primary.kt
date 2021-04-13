@@ -8,11 +8,11 @@ import controller.Syndication
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import model.ShowDescription
 import tornadofx.*
+import view.fragments.CastFragment
+import view.fragments.CastInfoFragment
 import kotlin.coroutines.CoroutineContext
 
 class Primary() : View ("Cast Portal"), CoroutineScope {

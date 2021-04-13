@@ -28,13 +28,15 @@ class Syndication : Controller(), CoroutineScope {
     }
 
     suspend fun refreshRss() = withContext(coroutineContext) {
-        rssLinks.map { link ->
-            launch {
-                client.downloadRss(link)?.let { rss ->
-                    store.saveRssText(rss, link)
-                } ?: println("couldn't refresh RSS:")
-            }
-        }.joinAll()
+        withTimeout(Configuration.timeout) {
+            rssLinks.map { link ->
+                launch {
+                    client.downloadRss(link)?.let { rss ->
+                        store.saveRssText(rss, link)
+                    } ?: println("couldn't refresh RSS:")
+                }
+            }.joinAll()
+        }
         store
             .listStoredRss()
             .takeUnless { it.isEmpty() }
