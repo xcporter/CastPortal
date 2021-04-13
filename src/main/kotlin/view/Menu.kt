@@ -37,6 +37,9 @@ class Menu : View() {
         listmenu {
             addClass(menubuttons)
             useMaxWidth = true
+            PrimaryViewModel.viewState.onChange {
+                if (it == ViewState.DETAIL) activeItem = null
+            }
             item("Home", FontAwesomeIconView(FontAwesomeIcon.HOME, "2em")) {
                 whenSelected { PrimaryViewModel.viewState.value = ViewState.HOME }
             }
@@ -57,6 +60,9 @@ class Menu : View() {
             fitWidth = 200.0
         }
         vbox(5.0) {
+            style {
+                padding = box(5.px, 0.px)
+            }
             text(Playback.titleText) {
                 fill = c("#FFFFFF")
                 wrappingWidth = 200.0

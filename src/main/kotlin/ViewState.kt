@@ -1,5 +1,5 @@
 enum class ViewState {
-    HOME, DOWNLOADS, SETTINGS
+    HOME, DOWNLOADS, SETTINGS, DETAIL
 }
 
 enum class CastArrangement {

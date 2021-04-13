@@ -39,6 +39,7 @@ class Primary() : View ("Cast Portal"), CoroutineScope {
                         ViewState.HOME -> find<Home>().root
                         ViewState.DOWNLOADS -> find<Downloads>().root
                         ViewState.SETTINGS -> find<Settings>().root
+                        ViewState.DETAIL -> find<CastFragment>(PrimaryViewModel.detailView.value).root
                     }
                 )
             }

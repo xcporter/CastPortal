@@ -10,7 +10,6 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.scene.image.Image
 import kotlinx.coroutines.*
 import tornadofx.*
-import java.io.File
 import java.net.URL
 import kotlin.coroutines.CoroutineContext
 
@@ -29,13 +28,19 @@ class EpisodeModel(init: RssItem, override val scope: CastScope) : ViewModel(), 
     val isPlaying = SimpleBooleanProperty(false)
     val isDownload = SimpleBooleanProperty(false)
 
-    val detail = SimpleBooleanProperty(false)
-
     init {
         isDownload.value = PrimaryViewModel.downloads.contains(init.enclosure?.url?.fileNameEncode())
         isDownload.onChange {
             if (it) scope.model.downloaded.add(this)
             else scope.model.downloaded.remove(this)
+        }
+
+        isPlaying.onChange {
+            if (it) {
+                scope.currentDescription.value = description.value
+                scope.currentTitle.value = title.value
+                PrimaryViewModel.clearDetailsOnNonPlayingCasts()
+            }
         }
     }
 
@@ -93,8 +98,6 @@ class EpisodeModel(init: RssItem, override val scope: CastScope) : ViewModel(), 
                 if (Playback.audio.value?.name != audioUrl.value?.fileNameEncode()) {
 //                    load media from downloads
                     Playback.audio.value = store.getFromDownloads(audioUrl.value)
-                    PrimaryViewModel.clearDetail()
-                    detail.value = true
                     PrimaryViewModel.clearIsPlaying()
                     isPlaying.value = true
                     Playback.image.value =
@@ -113,8 +116,6 @@ class EpisodeModel(init: RssItem, override val scope: CastScope) : ViewModel(), 
             } else {
 //            Load new episode if now playing doesn't match
                 Playback.player?.stop()
-                PrimaryViewModel.clearDetail()
-                detail.value = true
                 PrimaryViewModel.clearIsPlaying()
                 isPlaying.value = true
                 store.clearNowPlaying()

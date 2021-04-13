@@ -19,7 +19,11 @@ object PrimaryViewModel {
     val error = SimpleStringProperty()
     val isError = error.booleanBinding() { !it.isNullOrBlank() }
 
-    val downloads = observableListOf<String>(File("${Configuration.path.path}/downloads/").listFiles()?.map { it.name.takeIf { it.length == 64 } }?.filterNotNull() ?: listOf())
+    val downloads = observableListOf<String>(File("${Configuration.path.path}/downloads/")
+        .listFiles()
+        ?.map { it.name.takeIf { it.length == 64 } }
+        ?.filterNotNull()
+        ?: listOf())
 
     val hasDownloads = SimpleBooleanProperty(downloads.isNotEmpty())
 
@@ -35,12 +39,9 @@ object PrimaryViewModel {
         }
     }
 
-    fun clearDetail () {
-        castScopes.forEach {
-            it.model.items.forEach {
-                it.detail.value = false
-            }
-        }
+    fun setDetail(scope: CastScope) {
+        detailView.value = scope
+        viewState.value = ViewState.DETAIL
     }
 
     fun getFirst () = castScopes.first().model.items.firstOrNull()
@@ -55,5 +56,12 @@ object PrimaryViewModel {
         .find { it.model.items.any { it.isPlaying.value == true } }
         ?.model?.items?.let {
             it[((it.indexOf(it.find { it.isPlaying.value == true }) - 1).takeIf { it >= 0} ?: 0)]
+        }
+
+    fun clearDetailsOnNonPlayingCasts() = castScopes
+        .filter { !it.model.items.any { it.isPlaying.value } }
+        .forEach {
+            it.currentTitle.value = ""
+            it.currentDescription.value = ""
         }
 }
