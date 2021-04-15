@@ -23,6 +23,7 @@ class EpisodeModel(init: RssItem, override val scope: CastScope) : ViewModel(), 
     val description = SimpleStringProperty(init.description.stripHtml())
     val duration = SimpleStringProperty(init.duration.formatTime())
     val pubDate = SimpleStringProperty(init.pubDate.formatDate())
+    val guid = SimpleStringProperty(init.guid)
     val audioUrl = SimpleStringProperty(init.enclosure?.url)
 
     val isPlaying = SimpleBooleanProperty(false)

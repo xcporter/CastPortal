@@ -6,13 +6,22 @@ import controller.RssParser.parseRss
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import model.RSS
 import tornadofx.*
 import java.io.File
+import java.time.Duration
 
 class Store : Controller(),  CoroutineScope {
     val job = SupervisorJob()
     override val coroutineContext = Dispatchers.IO + job
+
+    val json = Json
 
     init { if (!path.exists()) path.mkdirs() }
 
@@ -49,6 +58,19 @@ class Store : Controller(),  CoroutineScope {
     fun clearNowPlaying() = File("${path.path}/nowPlaying/").listFiles()?.forEach { it.delete() }
 
     fun loadNowPlaying(url: String) = File("${path.path}/nowPlaying/${url.fileNameEncode()}").takeIf { it.exists() }
+
+    fun saveProgress(prog: Map<String, Double>) = launch {
+        File("${path.path}/progress").apply {
+            parentFile.mkdirs()
+            writeText(JsonObject(prog.map { it.key to JsonPrimitive(it.value) }.toMap()).toString())
+        }
+    }
+
+    fun loadProgress() : Map<String, Double>? = File("${path.path}/progress")
+        .takeIf { it.exists() }
+        ?.let {
+            json.decodeFromString(it.readText())
+        }
 
     fun deleteAllDownloads(obj: RSS) {
         println(obj.channel?.title)

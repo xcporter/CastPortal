@@ -21,10 +21,13 @@ import kotlin.properties.Delegates.observable
 object Playback {
     val mediaLoadSupervisor = SupervisorJob()
 
+    val store = find<Store>()
+
 //    Initial value is nonsense file so error can be displayed if anything returns null on first load
     val audio = SimpleObjectProperty<File>(File("file:///${Configuration.path.path}/nowPlaying/*"))
     val media = SimpleObjectProperty<Media>()
     val image = SimpleObjectProperty<Image>()
+    val progress = mutableMapOf<String, Double>()
     var player: MediaPlayer? by observable(null) { _, _, new ->
         new?.apply {
             currentTimeProperty().onChange {
@@ -37,9 +40,11 @@ object Playback {
                 ).toPeriod()) })
             setOnPlaying {
                 isPlaying.value = true
+                seekToProgress()
             }
             setOnPaused {
                 isPlaying.value = false
+                saveProgress()
             }
             setOnStopped {
                 isPlaying.value = false
@@ -67,13 +72,15 @@ object Playback {
     val sliderInProperty = SimpleDoubleProperty(0.0)
 
     init {
+        store.loadProgress()?.let { progress.putAll(it) }
+
         audio.onChange {
             it?.let {
                 try {
                     media.value = Media(it.toURI().toString())
                     player?.dispose()
                     player = MediaPlayer(media.value)
-                    PrimaryViewModel.error.value = ""
+                    PrimaryViewModel.error.value = null
                 } catch (e: Throwable) {
                     println(e)
                     e.printStackTrace()
@@ -93,6 +100,8 @@ object Playback {
                 volumeProperty.value = prevVolume
             }
         }
+
+
     }
 
     fun rewind15() = player?.let {
@@ -101,6 +110,28 @@ object Playback {
 
     fun fastforward15() = player?.let {
         it.seek(it.currentTime.add(Duration.seconds(15.0)))
+    }
+
+    fun saveProgress() {
+        PrimaryViewModel.castScopes
+            .flatMap { it.model.items }
+            .firstOrNull { it.isPlaying.value }
+            ?.let { playing ->
+                player?.currentTime?.toMillis()?.let { progress[playing.guid.value] = it }
+                store.saveProgress(progress)
+            }
+    }
+
+    fun seekToProgress() {
+        PrimaryViewModel.castScopes
+            .flatMap { it.model.items }
+            .firstOrNull { it.isPlaying.value }
+            ?.let { playing ->
+                progress[playing.guid.value]?.let {
+                    player?.seek(Duration.millis(it))
+                }
+
+            }
     }
 
     val durationFormatter = PeriodFormatterBuilder().apply {
