@@ -18,7 +18,9 @@ object PrimaryViewModel : CoroutineScope {
     val detailView = SimpleObjectProperty<CastScope>(null)
     val castArrangementState = SimpleObjectProperty(CastArrangement.GRID)
     val error = SimpleStringProperty()
-    val isError = error.booleanBinding() { !it.isNullOrBlank() }
+    val isError = error.booleanBinding { !it.isNullOrBlank() }
+    val warning = SimpleStringProperty("")
+    var warnAction: (() -> Unit)? = null
 
     val offlineMode = SimpleBooleanProperty(false)
 
@@ -79,7 +81,7 @@ object PrimaryViewModel : CoroutineScope {
             withContext(Dispatchers.Main) { PrimaryViewModel.error.value = error }
             offlineMode.value = true
             delay(Configuration.errorReadTime)
-            withContext(Dispatchers.Main) { PrimaryViewModel.error.value = "" }
+            withContext(Dispatchers.Main) { PrimaryViewModel.error.value = null }
         }
 
     fun launchOfflineLoop() =

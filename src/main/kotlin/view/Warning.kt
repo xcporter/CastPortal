@@ -1,6 +1,7 @@
 package view
 
 import controller.Configuration
+import model.PrimaryViewModel
 import tornadofx.*
 import java.io.File
 
@@ -9,11 +10,11 @@ class Warning : View() {
         style {
             padding = box(10.px)
         }
-        label("Warning, this will remove all downloads and saved RSS streams")
+        label(PrimaryViewModel.warning)
         hbox(10.0) {
             button("Ok") {
                 action {
-                    File(Configuration.path.path).deleteRecursively()
+                    PrimaryViewModel.warnAction?.invoke()
                     close()
                 }
             }
@@ -23,5 +24,9 @@ class Warning : View() {
                 }
             }
         }
+    }
+
+    override fun onUndock() {
+        PrimaryViewModel.warnAction = null
     }
 }

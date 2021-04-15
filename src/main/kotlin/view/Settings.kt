@@ -5,8 +5,10 @@ import BaseStyle.Companion.highlight
 import BaseStyle.Companion.mid
 import BaseStyle.Companion.midHigh
 import BaseStyle.Companion.primary
+import BaseStyle.Companion.settingsButton
 import BaseStyle.Companion.simpleAdd
 import BaseStyle.Companion.simpleDelete
+import controller.Configuration
 import controller.Store
 import controller.Syndication
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
@@ -20,7 +22,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import model.PrimaryViewModel
+import model.RenderDownloads
 import tornadofx.*
+import java.io.File
 
 class Settings : View(), CoroutineScope {
     override val coroutineContext = Dispatchers.IO
@@ -147,17 +151,37 @@ class Settings : View(), CoroutineScope {
                     managedWhen(PrimaryViewModel.isLoadNew)
                 }
             }
-            vbox {
+            vbox(8.0) {
                 style {
                     padding = box(2.em, 0.em, 0.em, 0.em)
                 }
-                button ("Delete all stored data") {
+                button("Clear Downloads") {
+                    addClass(settingsButton)
+                    action {
+                        warn("Warning, this will remove all downloaded episodes") {
+                            File("${Configuration.path.path}/downloads/").listFiles()?.forEach { it.delete() }
+                            PrimaryViewModel.castScopes
+                                .flatMap { it.model.downloaded.clear(); it.model.items }
+                                .forEach { it.isDownload.value = false }
+                            fire(RenderDownloads())
+                        }
+                    }
+                }
+                button ("Clear all stored data") {
                     addClass(delete)
                     action {
-                        openInternalWindow(Warning::class)
+                        warn("Warning, this will remove all saved downloads, RSS streams, and settings") {
+                            File(Configuration.path.path).deleteRecursively()
+                        }
                     }
                 }
             }
         }
+    }
+
+    private fun warn(warning: String, action: () -> Unit) {
+        PrimaryViewModel.warning.value = warning
+        PrimaryViewModel.warnAction = action
+        openInternalWindow(Warning::class, movable = false)
     }
 }

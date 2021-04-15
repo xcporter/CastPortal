@@ -160,7 +160,6 @@ class Downloads : View() {
     }
 
     override fun onDock() {
-        castScopesWithDownloads.clear()
-        castScopesWithDownloads.addAll(PrimaryViewModel.castScopes.filter { it.model.hasDownloads.value })
+        castScopesWithDownloads.setAll(PrimaryViewModel.castScopes.filter { it.model.hasDownloads.value })
     }
 }

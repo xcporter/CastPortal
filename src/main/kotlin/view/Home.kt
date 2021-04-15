@@ -2,18 +2,21 @@ package view
 
 import BaseStyle.Companion.highlight
 import BaseStyle.Companion.invisibleButtons
+import BaseStyle.Companion.mid
 import BaseStyle.Companion.midHigh
 import BaseStyle.Companion.primary
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleObjectProperty
+import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.ScrollPane
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
+import model.CastScope
 import model.PrimaryViewModel
 import model.ShowDescription
 import tornadofx.*
@@ -88,14 +91,8 @@ class Home : View() {
                 region { hgrow = Priority.ALWAYS }
                 button {
                     addClass(invisibleButtons)
-                    graphic = cache {
-                        vbox(2.0) {
-                            repeat(3) {
-                                hbox(2.0) {
-                                    repeat(3) { rectangle(0, 0, 5.0, 5.0) { fillProperty().bind(gridButtonFill) } }
-                                }
-                            }
-                        }
+                    graphic = FontAwesomeIconView(FontAwesomeIcon.TH, "1.8em").apply {
+                        fillProperty().bind(gridButtonFill)
                     }
                     action {
                         PrimaryViewModel.castArrangementState.value = CastArrangement.GRID
