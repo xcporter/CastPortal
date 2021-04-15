@@ -9,6 +9,7 @@ class BaseStyle : Stylesheet() {
         val player by cssclass()
         val menu by cssclass()
         val menubuttons by cssclass()
+        val settingsButton by cssclass()
         val episodeButtons by cssclass()
         val invisibleButtons by cssclass()
         val episode by cssclass()
@@ -126,6 +127,25 @@ class BaseStyle : Stylesheet() {
             borderWidth += box(2.px)
             borderColor += box(c("#C24C2B"))
             textFill = c("#C24C2B")
+
+            and (hover) {
+                backgroundColor += mid
+            }
+
+            and (pressed) {
+                backgroundColor += Color.WHITE
+            }
+        }
+
+        settingsButton {
+            fontSize = 2.em
+            backgroundColor += Color.TRANSPARENT
+            borderRadius += box(4.px)
+            backgroundRadius += box(4.px)
+            backgroundInsets += box(2.px)
+            borderWidth += box(2.px)
+            borderColor += box(midHigh)
+            textFill = midHigh
 
             and (hover) {
                 backgroundColor += mid
