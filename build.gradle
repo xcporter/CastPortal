@@ -1,11 +1,11 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.4.10'
     id 'org.openjfx.javafxplugin' version '0.0.9'
-    id 'com.xcporter.jpkg' version '0.0.4-beta'
+    id 'com.xcporter.jpkg' version '0.0.5'
 }
 
 group = 'com.xcporter'
-version = '0.0.2'
+version = '1.0.3'
 
 mainClassName = "MainKt"
 
@@ -54,13 +54,15 @@ jpkg {
     vendor = "Alexander Porter"
     copyright = "2021"
     description = "Minimalist Podcatcher"
-    resourceDir = "./src/main/resources/icons/"
+    resourceDir = "src/main/resources/icons/"
     menuGroup = "Podcast Farm"
     mac {
-        icon = "src/main/resources/icons/Logo_Red.icns"
+        icon = "src/main/resources/icons/CastPortal.icns"
         name = "Cast Portal"
         signingIdentity = env('IDENTITY')
         bundleName = "com.xcporter.castportal"
+        userName = env("USERNAME")
+        password = env("PASSWORD")
     }
     windows {
         icon = "src/main/resources/icons/Logo_Red.ico"
