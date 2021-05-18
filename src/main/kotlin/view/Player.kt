@@ -3,7 +3,6 @@ package view
 import BaseStyle.Companion.midHigh
 import BaseStyle.Companion.player
 import BaseStyle.Companion.playerButtons
-import controller.Configuration
 import controller.Playback
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
@@ -55,6 +54,7 @@ class Player : View(), CoroutineScope {
                     action {
                         if ((Playback.player?.currentTime?.toSeconds() ?: 0.0) <= 1.0) {
                             PrimaryViewModel.getPrevious()?.apply {
+                                Playback.saveProgress()
                                 startPlayback()
                             }
                         } else {
@@ -103,6 +103,7 @@ class Player : View(), CoroutineScope {
                     graphic = FontAwesomeIconView(FontAwesomeIcon.FORWARD, "2em").apply { fill = c("#3C447F")  }
                     action {
                         PrimaryViewModel.getNext()?.apply {
+                            Playback.saveProgress()
                             startPlayback()
                         }
                     }

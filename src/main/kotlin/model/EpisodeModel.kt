@@ -6,9 +6,13 @@ import controller.Encoder.formatDate
 import controller.Encoder.formatTime
 import controller.Encoder.stripHtml
 import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.scene.image.Image
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 import tornadofx.*
 import java.net.URL
 import kotlin.coroutines.CoroutineContext
@@ -29,7 +33,10 @@ class EpisodeModel(init: RssItem, override val scope: CastScope) : ViewModel(), 
     val isPlaying = SimpleBooleanProperty(false)
     val isDownload = SimpleBooleanProperty(false)
 
+    val progress = SimpleDoubleProperty(0.0)
+
     init {
+        updateProgress()
         isDownload.value = PrimaryViewModel.downloads.contains(init.enclosure?.url?.fileNameEncode())
         isDownload.onChange {
             if (it) scope.model.downloaded.add(this)
@@ -42,6 +49,10 @@ class EpisodeModel(init: RssItem, override val scope: CastScope) : ViewModel(), 
                 scope.currentTitle.value = title.value
                 PrimaryViewModel.clearDetailsOnNonPlayingCasts()
             }
+        }
+
+        subscribe<UpdateProgress> {
+            updateProgress()
         }
     }
 
@@ -61,6 +72,12 @@ class EpisodeModel(init: RssItem, override val scope: CastScope) : ViewModel(), 
             store.removeDownload(audioUrl.value)
         }
         isDownload.value = false
+    }
+
+    fun updateProgress() {
+        progress.value = Playback.progress[guid.value]?.let {
+            if (it == -1.0) -1.0 else it / Time.parse(duration.value)
+        } ?: 0.0
     }
 
     /**

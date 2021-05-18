@@ -1,5 +1,7 @@
 package model
 
+import CastArrangement
+import ViewState
 import controller.Configuration
 import controller.Syndication
 import javafx.beans.property.SimpleBooleanProperty
@@ -66,8 +68,12 @@ object PrimaryViewModel : CoroutineScope {
     fun getPrevious () : EpisodeModel? = castScopes
         .find { it.model.items.any { it.isPlaying.value == true } }
         ?.model?.items?.let {
-            it[((it.indexOf(it.find { it.isPlaying.value == true }) - 1).takeIf { it >= 0} ?: 0)]
+            it[((it.indexOf(it.find { it.isPlaying.value == true }) - 1).takeIf { it >= 0 } ?: 0)]
         }
+
+    fun getAnyUnplayed (prog : MutableMap<String, Double>) : EpisodeModel? = castScopes
+        .find { it.model.items.any { it.isPlaying.value == true } }
+        ?.model?.items?.firstOrNull { !prog.keys.contains(it.guid.value) }
 
     fun clearDetailsOnNonPlayingCasts() = castScopes
         .filter { !it.model.items.any { it.isPlaying.value } }
@@ -83,6 +89,27 @@ object PrimaryViewModel : CoroutineScope {
             delay(Configuration.errorReadTime)
             withContext(Dispatchers.Main) { PrimaryViewModel.error.value = null }
         }
+
+    fun autoplay(prog: MutableMap<String, Double>) {
+        val newer = getPrevious()
+        val older = getNext()
+
+        println("Prev: ${newer?.let { prog[it.guid.value] }} Next: ${older?.let { prog[it.guid.value] }}")
+        when {
+            newer?.let { prog[it.guid.value] != -1.0 } == true -> {
+                println("auto prev")
+                newer.startPlayback()
+            }
+            older?.let { prog[it.guid.value] != -1.0 } == true -> {
+                println("auto next")
+                older.startPlayback()
+            }
+            else -> getAnyUnplayed(prog)?.apply {
+                println("auto any")
+                startPlayback()
+            }
+        }
+    }
 
     fun launchOfflineLoop() =
         launch(coroutineContext + backgroundJobs) {

@@ -8,14 +8,12 @@ import javafx.scene.image.Image
 import javafx.scene.media.Media
 import javafx.scene.media.MediaPlayer
 import javafx.util.Duration
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import model.PrimaryViewModel
+import model.UpdateProgress
 import org.joda.time.format.PeriodFormatterBuilder
 import tornadofx.*
 import java.io.File
-import java.net.URL
 import kotlin.properties.Delegates.observable
 
 object Playback {
@@ -42,6 +40,7 @@ object Playback {
                 isPlaying.value = true
                 seekToProgress()
             }
+            setOnReady { seekToProgress() }
             setOnPaused {
                 isPlaying.value = false
                 saveProgress()
@@ -49,7 +48,17 @@ object Playback {
             setOnStopped {
                 isPlaying.value = false
             }
-
+            setOnEndOfMedia {
+                PrimaryViewModel.castScopes
+                    .flatMap { it.model.items }
+                    .firstOrNull { it.isPlaying.value }
+                    ?.let { playing ->
+                        progress[playing.guid.value] = -1.0
+                        store.saveProgress(progress)
+                    }
+                PrimaryViewModel.autoplay(progress)
+                FX.eventbus.fire(UpdateProgress())
+            }
             volumeProperty.bindBidirectional(volumeProperty())
         }
     }
@@ -73,7 +82,6 @@ object Playback {
 
     init {
         store.loadProgress()?.let { progress.putAll(it) }
-
         audio.onChange {
             it?.let {
                 try {
@@ -100,8 +108,6 @@ object Playback {
                 volumeProperty.value = prevVolume
             }
         }
-
-
     }
 
     fun rewind15() = player?.let {
@@ -120,21 +126,22 @@ object Playback {
                 player?.currentTime?.toMillis()?.let { progress[playing.guid.value] = it }
                 store.saveProgress(progress)
             }
+        FX.eventbus.fire(UpdateProgress())
     }
 
-    fun seekToProgress() {
+    private fun seekToProgress() {
         PrimaryViewModel.castScopes
             .flatMap { it.model.items }
             .firstOrNull { it.isPlaying.value }
             ?.let { playing ->
                 progress[playing.guid.value]?.let {
-                    player?.seek(Duration.millis(it))
+                    if (it != -1.0) player?.seek(Duration.millis(it))
+                    else  player?.seek(Duration.ZERO)
                 }
-
             }
     }
 
-    val durationFormatter = PeriodFormatterBuilder().apply {
+    private val durationFormatter = PeriodFormatterBuilder().apply {
         printZeroAlways()
         appendHours()
         appendSeparator(":")

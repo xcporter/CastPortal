@@ -18,9 +18,12 @@ class EpisodeFragment : Fragment() {
     override val scope = super.scope as CastScope
     val model: EpisodeModel by param()
 
-
     val playSymbol = FontAwesomeIconView(FontAwesomeIcon.PLAY_CIRCLE, "4em").apply { fill = c("#447F57") }
     val pauseSymbol = FontAwesomeIconView(FontAwesomeIcon.PAUSE_CIRCLE, "4em").apply { fill = c("#4B8D1C") }
+
+    val container = vbox {
+        add(find<Progress>(mapOf("progress" to model.progress.value)))
+    }
 
     val downloadButton = button {
         addClass(episodeButtons)
@@ -63,6 +66,12 @@ class EpisodeFragment : Fragment() {
                 }
             }
         }
+
+        model.progress.onChange {
+            container.replaceChildren {
+               add(find<Progress>(mapOf("progress" to model.progress.value)))
+            }
+        }
     }
 
     override val root = hbox(8.0) {
@@ -72,6 +81,7 @@ class EpisodeFragment : Fragment() {
             else style { backgroundColor += primary }
         }
         onLeftClick { model.startPlayback() }
+        add(container)
         label(graphic = playSymbol) {
             visibleWhen { (model.isPlaying.or(parent.hoverProperty())).and(!Playback.isPlaying) }
             managedWhen { !Playback.isPlaying }
