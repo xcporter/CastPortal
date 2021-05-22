@@ -2,7 +2,6 @@ package controller
 
 import controller.Configuration.path
 import controller.Encoder.fileNameEncode
-import controller.Encoder.toWav
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.apache.Apache
 import io.ktor.client.request.get
@@ -53,17 +52,6 @@ class Client : Controller(){
                 PrimaryViewModel.isDownloadMedia.value = false
                 println("download audio")
                 res.content.copyAndClose(file.writeChannel())
-                if(Configuration.platform == "Linux") {
-                    println("convert to wav ${file.name}")
-                    file.toWav().let { tmp ->
-                        file.outputStream().buffered().use { out ->
-                            tmp.inputStream().buffered().use { wav ->
-                                wav.copyTo(out)
-                            }
-                        }
-                        tmp.delete()
-                    }
-                }
                 file
             } else null
                 .also { println("${res.status} ${res.content}")
@@ -89,17 +77,6 @@ class Client : Controller(){
             return if (res.status.isSuccess()) {
                 println("download now playing")
                 res.content.copyAndClose(file.writeChannel())
-                if(Configuration.platform == "Linux") {
-                    println("convert to wav ${file.name}")
-                    file.toWav().let { tmp ->
-                        file.outputStream().buffered().use { out ->
-                            tmp.inputStream().buffered().use { wav ->
-                                wav.copyTo(out)
-                            }
-                        }
-                        tmp.delete()
-                    }
-                }
                 file
             } else null.also { println("${res.status} ${res.content}") }
         } catch(e: Throwable) {

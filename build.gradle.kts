@@ -20,7 +20,6 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
     implementation("org.jsoup:jsoup:1.13.1")
     implementation("joda-time:joda-time:2.10.6")
-    implementation("ws.schild:jave-all-deps:2.5.0")
     implementation("io.ktor:ktor-client-apache:1.4.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
 
@@ -42,7 +41,7 @@ tasks.compileTestKotlin {
 }
 
 javafx {
-    version = "14"
+    version = "16"
     modules = listOf("javafx.controls", "javafx.fxml", "javafx.media", "javafx.graphics")
 }
 
