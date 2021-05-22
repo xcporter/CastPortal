@@ -5,7 +5,6 @@ import BaseStyle.Companion.playerButtons
 import controller.Playback
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
-import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import tornadofx.*
 

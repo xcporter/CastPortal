@@ -1,7 +1,7 @@
 package view.fragments
 
-import BaseStyle.Companion.highlight
 import BaseStyle.Companion.invisibleButtons
+import BaseStyle.Companion.textColor
 import controller.Configuration
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
@@ -23,7 +23,7 @@ class ListFragment : Fragment(), CoroutineScope {
 
     val infoButton = button {
         addClass(invisibleButtons)
-        graphic = FontAwesomeIconView(FontAwesomeIcon.INFO_CIRCLE).apply { fill = highlight; size = "1.5em" }
+        graphic = FontAwesomeIconView(FontAwesomeIcon.INFO_CIRCLE).apply { fill = textColor; size = "1.5em" }
         action {
             fire(
                 ShowDescription(
@@ -46,14 +46,14 @@ class ListFragment : Fragment(), CoroutineScope {
         vbox {
             text(scope.model.author) {
                 style {
-                    fill = highlight
+                    fill = textColor
                     fontSize = 1.em
                 }
                 wrappingWidth = 175.0
             }
             text(scope.model.title) {
                 style {
-                    fill = highlight
+                    fill = textColor
                     fontSize = 2.em
                 }
                 wrappingWidth = 175.0

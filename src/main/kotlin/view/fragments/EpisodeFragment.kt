@@ -4,6 +4,7 @@ import BaseStyle.Companion.episode
 import BaseStyle.Companion.episodeButtons
 import BaseStyle.Companion.highlight
 import BaseStyle.Companion.primary
+import BaseStyle.Companion.textColor
 import controller.Playback
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
@@ -11,6 +12,7 @@ import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import model.CastScope
 import model.EpisodeModel
+import model.PrimaryViewModel
 import model.RenderDownloads
 import tornadofx.*
 
@@ -51,7 +53,7 @@ class EpisodeFragment : Fragment() {
             }
         } else {
             downloadButton.style {
-                backgroundColor += highlight
+                backgroundColor += textColor
             }
         }
 
@@ -62,7 +64,7 @@ class EpisodeFragment : Fragment() {
                 }
             } else {
                 downloadButton.style {
-                    backgroundColor += highlight
+                    backgroundColor += textColor
                 }
             }
         }
@@ -76,6 +78,7 @@ class EpisodeFragment : Fragment() {
 
     override val root = hbox(8.0) {
         addClass(episode)
+        prefWidthProperty().bind(PrimaryViewModel.contentWidth.multiply(0.64))
         hoverProperty().or(model.isPlaying).onChange {
             if (it) style { backgroundColor +=  c("#081F1D") }
             else style { backgroundColor += primary }
@@ -94,8 +97,8 @@ class EpisodeFragment : Fragment() {
             fill = highlight
         }
         text(model.title) {
-            wrappingWidth = 300.0
             fill = highlight
+            wrappingWidth = 250.0
         }
         region { hgrow = Priority.ALWAYS }
         vbox (5.0) {

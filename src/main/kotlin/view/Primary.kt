@@ -1,6 +1,6 @@
 package view
 
-import model.PrimaryViewModel
+import ViewState
 import controller.Client
 import controller.Playback
 import controller.Store
@@ -8,7 +8,10 @@ import controller.Syndication
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import model.PrimaryViewModel
 import model.ShowDescription
 import tornadofx.*
 import view.fragments.CastFragment
@@ -28,6 +31,10 @@ class Primary() : View ("Cast Portal"), CoroutineScope {
     }
 
     init {
+        PrimaryViewModel.contentWidth.value = container.width
+        container.widthProperty().onChange {
+            PrimaryViewModel.contentWidth.value = it
+        }
         PrimaryViewModel.viewState.onChange {
             it?.let {
                 container.replaceChildren (

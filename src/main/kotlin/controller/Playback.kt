@@ -73,6 +73,11 @@ object Playback {
 
     val authorText = SimpleStringProperty()
 
+    val compositeText = stringBinding(titleText, authorText) {
+        if (titleText.value != null && authorText.value != null) "${authorText.value} - ${titleText.value}"
+        else ""
+    }
+
     val volumeProperty = SimpleDoubleProperty(1.0)
     var prevVolume = 0.0
 
@@ -80,9 +85,12 @@ object Playback {
 
     val sliderInProperty = SimpleDoubleProperty(0.0)
 
+    val isActive = SimpleBooleanProperty(false)
+
     init {
         store.loadProgress()?.let { progress.putAll(it) }
         audio.onChange {
+            isActive.value = true
             it?.let {
                 try {
                     media.value = Media(it.toURI().toString())

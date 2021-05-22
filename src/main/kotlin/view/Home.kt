@@ -1,27 +1,20 @@
 package view
 
-import BaseStyle.Companion.highlight
 import BaseStyle.Companion.invisibleButtons
-import BaseStyle.Companion.mid
 import BaseStyle.Companion.midHigh
-import BaseStyle.Companion.primary
+import BaseStyle.Companion.shadow
+import BaseStyle.Companion.textColor
+import CastArrangement
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
-import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleObjectProperty
-import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.ScrollPane
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
-import javafx.scene.text.FontWeight
-import model.CastScope
 import model.PrimaryViewModel
-import model.ShowDescription
 import tornadofx.*
-import view.fragments.CastFragment
-import view.fragments.CastInfoFragment
 import view.fragments.GridFragment
 import view.fragments.ListFragment
 
@@ -49,7 +42,7 @@ class Home : View() {
 
     val gridButtonFill = SimpleObjectProperty<Color>(Color.ORANGE)
 
-    val listButtonFill = SimpleObjectProperty<Color>(highlight)
+    val listButtonFill = SimpleObjectProperty<Color>(textColor)
 
     init {
 
@@ -59,11 +52,11 @@ class Home : View() {
                     CastArrangement.LIST -> {
                         displayPanel.replaceChildren(listPanel)
                         listButtonFill.value = Color.ORANGE
-                        gridButtonFill.value = highlight
+                        gridButtonFill.value = textColor
                     }
                     CastArrangement.GRID -> {
                         displayPanel.replaceChildren(gridPanel)
-                        listButtonFill.value = highlight
+                        listButtonFill.value = textColor
                         gridButtonFill.value = Color.ORANGE
                     }
                 }
@@ -114,7 +107,7 @@ class Home : View() {
                 hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
                 vbarPolicy = ScrollPane.ScrollBarPolicy.ALWAYS
                 style {
-                    backgroundColor += primary
+                    backgroundColor += shadow
                 }
 
                 alignment = Pos.CENTER

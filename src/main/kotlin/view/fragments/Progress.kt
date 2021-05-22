@@ -1,6 +1,6 @@
 package view.fragments
 
-import BaseStyle.Companion.highlight
+import BaseStyle.Companion.textColor
 import javafx.scene.paint.Color
 import javafx.scene.shape.ArcType
 import tornadofx.*
@@ -15,7 +15,7 @@ class Progress() : Fragment() {
                 centerY = 20.0
                 radius = 10.0
                 fill = Color.TRANSPARENT
-                stroke = highlight
+                stroke = textColor
                 strokeWidth = 2.0
             }
             arc {
@@ -25,7 +25,7 @@ class Progress() : Fragment() {
                 radiusY = 10.0
                 startAngle = 90.0
                 length = if (progress == -1.0) { 360.0 } else -(360.0 * progress)
-                fill = highlight
+                fill = textColor
                 type = ArcType.ROUND
             }
         }

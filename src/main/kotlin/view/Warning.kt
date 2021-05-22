@@ -1,9 +1,7 @@
 package view
 
-import controller.Configuration
 import model.PrimaryViewModel
 import tornadofx.*
-import java.io.File
 
 class Warning : View() {
     override val root = vbox(10.0) {

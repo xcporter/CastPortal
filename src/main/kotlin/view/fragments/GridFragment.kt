@@ -1,11 +1,10 @@
 package view.fragments
 
-import BaseStyle.Companion.highlight
 import BaseStyle.Companion.invisibleButtons
+import BaseStyle.Companion.textColor
 import controller.Configuration
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
-import javafx.scene.layout.Priority
 import kotlinx.coroutines.*
 import model.CastScope
 import model.PrimaryViewModel
@@ -23,7 +22,7 @@ class GridFragment : Fragment(), CoroutineScope {
 
     val infoButton = button {
         addClass(invisibleButtons)
-        graphic = FontAwesomeIconView(FontAwesomeIcon.INFO_CIRCLE).apply { fill = highlight; size = "1.5em" }
+        graphic = FontAwesomeIconView(FontAwesomeIcon.INFO_CIRCLE).apply { fill = textColor; size = "1.5em" }
         action {
             fire(
                 ShowDescription(
@@ -35,7 +34,7 @@ class GridFragment : Fragment(), CoroutineScope {
         }
     }
 
-    override val root = vbox {
+    override val root = vbox(5.0) {
         style {
             padding = box(10.px)
         }
@@ -47,12 +46,21 @@ class GridFragment : Fragment(), CoroutineScope {
         add(imageContainer)
 
         hbox {
-            text(scope.model.title) {
-                style {
-                    fill = highlight
-                    fontSize = 2.em
+            vbox(2.0) {
+                text(scope.model.author) {
+                    style {
+                        fill = textColor
+                        fontSize = 1.5.em
+                    }
+                    wrappingWidth = 150.0
                 }
-                wrappingWidth = 175.0
+                text(scope.model.title) {
+                    style {
+                        fill = textColor
+                        fontSize = 1.5.em
+                    }
+                    wrappingWidth = 150.0
+                }
             }
 
             add(infoButton)
@@ -68,8 +76,8 @@ class GridFragment : Fragment(), CoroutineScope {
                 withContext(Dispatchers.Main) {
                     imageContainer.add(
                         imageview(URL("file:///${Configuration.path.path}/images/${scope.model.imageUrl.value}").toExternalForm()) {
-                            fitWidth = 200.0
-                            fitHeight = 200.0
+                            fitWidth = 170.0
+                            fitHeight = 170.0
                         }
                     )
                 }

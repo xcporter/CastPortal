@@ -1,6 +1,5 @@
 package view.fragments
 
-import model.CastScope
 import tornadofx.*
 
 class CastInfoFragment : Fragment() {

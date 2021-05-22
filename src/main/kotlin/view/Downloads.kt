@@ -4,6 +4,7 @@ import BaseStyle.Companion.highlight
 import BaseStyle.Companion.invisibleButtons
 import BaseStyle.Companion.midHigh
 import BaseStyle.Companion.primary
+import CastArrangement
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
 import javafx.beans.property.SimpleObjectProperty

@@ -1,8 +1,8 @@
 package view
 
-import BaseStyle.Companion.midHigh
 import BaseStyle.Companion.player
 import BaseStyle.Companion.playerButtons
+import BaseStyle.Companion.textColor
 import controller.Playback
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
@@ -17,6 +17,7 @@ import tornadofx.*
 class Player : View(), CoroutineScope {
     override val coroutineContext = Dispatchers.Main
     val slider = slider(0.0, 1.0, 0.0) {
+        minWidth = 80.0
         hgrow = Priority.ALWAYS
         valueProperty().bindBidirectional(Playback.sliderOutProperty)
 //        Switch bindings to avoid control feedback loop between current time and seek
@@ -40,9 +41,22 @@ class Player : View(), CoroutineScope {
     override val root = vbox {
         alignment = Pos.BOTTOM_CENTER
         addClass(player)
+        hbox {
+            style {
+                padding = box(10.px)
+            }
+            text(Playback.compositeText) {
+                fill = textColor
+                style {
+                    fontSize = 1.5.em
+                }
+            }
+            visibleWhen(Playback.isActive)
+            managedWhen(Playback.isActive)
+        }
         hbox(5.0) {
             style {
-                padding = box(20.px)
+                padding = box(5.px)
             }
             useMaxWidth = true
 
@@ -50,7 +64,7 @@ class Player : View(), CoroutineScope {
                 alignment = Pos.CENTER
                 button () {
                     addClass(playerButtons)
-                    graphic = FontAwesomeIconView(FontAwesomeIcon.BACKWARD, "2em").apply { fill = c("#3C447F")  }
+                    graphic = FontAwesomeIconView(FontAwesomeIcon.BACKWARD, "2em").apply { fill = textColor  }
                     action {
                         if ((Playback.player?.currentTime?.toSeconds() ?: 0.0) <= 1.0) {
                             PrimaryViewModel.getPrevious()?.apply {
@@ -67,7 +81,7 @@ class Player : View(), CoroutineScope {
                     action {
                         Playback.rewind15()
                     }
-                    textFill = midHigh
+                    textFill = textColor
                     text = "15s"
                 }
                 button () {
@@ -79,7 +93,7 @@ class Player : View(), CoroutineScope {
                         Playback.player?.let { it.play() }
                             ?: PrimaryViewModel.getFirst()?.startPlayback()
                     }
-                    graphic = FontAwesomeIconView(FontAwesomeIcon.PLAY, "2em").apply { fill = c("#4B8D1C") }
+                    graphic = FontAwesomeIconView(FontAwesomeIcon.PLAY, "2em").apply { fill = textColor }
                 }
                 button() {
                     addClass(playerButtons)
@@ -88,19 +102,19 @@ class Player : View(), CoroutineScope {
                     action {
                         Playback.player?.pause()
                     }
-                    graphic = FontAwesomeIconView(FontAwesomeIcon.PAUSE, "2em").apply { fill = c("#3C7D7F")}
+                    graphic = FontAwesomeIconView(FontAwesomeIcon.PAUSE, "2em").apply { fill = textColor }
                 }
                 button () {
                     addClass(playerButtons)
                     action {
                         Playback.fastforward15()
                     }
-                    textFill = midHigh
+                    textFill = textColor
                     text = "15s"
                 }
                 button () {
                     addClass(playerButtons)
-                    graphic = FontAwesomeIconView(FontAwesomeIcon.FORWARD, "2em").apply { fill = c("#3C447F")  }
+                    graphic = FontAwesomeIconView(FontAwesomeIcon.FORWARD, "2em").apply { fill = textColor }
                     action {
                         PrimaryViewModel.getNext()?.apply {
                             Playback.saveProgress()

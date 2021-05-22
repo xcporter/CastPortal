@@ -1,13 +1,12 @@
 package view.fragments
 
-import BaseStyle.Companion.highlight
 import BaseStyle.Companion.invisibleButtons
 import BaseStyle.Companion.mid
 import BaseStyle.Companion.midHigh
-import BaseStyle.Companion.primary
+import BaseStyle.Companion.shadow
+import BaseStyle.Companion.textColor
+import ViewState
 import controller.Configuration
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
@@ -34,7 +33,7 @@ class CastFragment() : Fragment(), CoroutineScope {
     private val searchFilter = SimpleStringProperty("")
 
     val sortUpFill = SimpleObjectProperty<Color>(Color.ORANGE)
-    val sortDownFill = SimpleObjectProperty<Color>(highlight)
+    val sortDownFill = SimpleObjectProperty<Color>(textColor)
 
 
     var imageContainer = hbox {}
@@ -64,14 +63,14 @@ class CastFragment() : Fragment(), CoroutineScope {
             if (it) {
                 items.reverse()
                 sortDownFill.value = Color.ORANGE
-                sortUpFill.value = highlight
+                sortUpFill.value = textColor
             }
             else {
                 items.setAll(
                     if (!downloadsOnly) scope.model.items
                     else scope.model.items.filter { it.isDownload.value }
                 )
-                sortDownFill.value = highlight
+                sortDownFill.value = textColor
                 sortUpFill.value = Color.ORANGE
             }
         }
@@ -96,36 +95,34 @@ class CastFragment() : Fragment(), CoroutineScope {
             add(imageContainer)
             vbox {
                 hgrow = Priority.ALWAYS
+                minWidth = 100.0
                 text(scope.model.author) {
                     style {
-                        fill = highlight
+                        fill = textColor
                         fontSize = 1.em
                     }
-                    wrappingWidth = 450.0
+                    wrappingWidthProperty().bind(widthProperty().minus(100.0))
                 }
                 text(scope.model.title) {
                     style {
-                        fill = highlight
+                        fill = textColor
                         fontSize = 2.em
                     }
-                    wrappingWidth = 450.0
-
+                    wrappingWidthProperty().bind(widthProperty().minus(100.0))
                 }
                 scrollpane {
                     hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
                     vbarPolicy = ScrollPane.ScrollBarPolicy.AS_NEEDED
-                    fitToParentSize()
+                    isFitToWidth = true
                     style {
-                        backgroundColor += primary
+                        backgroundColor += shadow
                         padding = box(5.px, 10.px)
                     }
-                    vbox {
-                        text(scope.model.description) {
-                            style {
-                                fill = highlight
-                            }
-                            wrappingWidth = 500.0
+                    text(scope.model.description) {
+                        style {
+                            fill = textColor
                         }
+                        wrappingWidthProperty().bind(widthProperty().minus(100.0))
                     }
                 }
             }
@@ -134,6 +131,7 @@ class CastFragment() : Fragment(), CoroutineScope {
         hbox {
             alignment = Pos.CENTER_RIGHT
             vbox() {
+                prefWidthProperty().bind(PrimaryViewModel.contentWidth.multiply(0.33))
                 style {
                     padding = box(10.px)
                 }
@@ -142,22 +140,22 @@ class CastFragment() : Fragment(), CoroutineScope {
                     hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
                     vbarPolicy = ScrollPane.ScrollBarPolicy.AS_NEEDED
                     style {
-                        backgroundColor += primary
+                        backgroundColor += shadow
                     }
                     vbox(5.0) {
                         text(scope.currentTitle) {
                             style {
-                                fill = highlight
+                                fill = textColor
                                 fontSize = 1.5.em
                             }
-                            wrappingWidth = 200.0
+                            wrappingWidthProperty().bind(PrimaryViewModel.contentWidth.multiply(0.3).minus(20.0))
                         }
                         text(scope.currentDescription) {
                             style {
-                                fill = highlight
+                                fill = textColor
                                 fontSize = 1.em
                             }
-                            wrappingWidth = 200.0
+                            wrappingWidthProperty().bind(PrimaryViewModel.contentWidth.multiply(0.3).minus(20.0))
                         }
                     }
                 }
@@ -205,7 +203,7 @@ class CastFragment() : Fragment(), CoroutineScope {
                         maxWidth = 200.0
                         style {
                             backgroundColor += mid
-                            textFill = highlight
+                            textFill = textColor
                         }
                     }
                 }
@@ -214,7 +212,7 @@ class CastFragment() : Fragment(), CoroutineScope {
                     hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
                     minViewportWidth = 500.0
                     style {
-                        backgroundColor += primary
+                        backgroundColor += shadow
                     }
                     vbox {
                         hgrow = Priority.ALWAYS

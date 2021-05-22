@@ -5,6 +5,7 @@ import ViewState
 import controller.Configuration
 import controller.Syndication
 import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import kotlinx.coroutines.*
@@ -18,6 +19,7 @@ object PrimaryViewModel : CoroutineScope {
     val castScopes = observableListOf<CastScope>()
     val viewState = SimpleObjectProperty(ViewState.HOME)
     val detailView = SimpleObjectProperty<CastScope>(null)
+    val contentWidth = SimpleDoubleProperty(0.0)
     val castArrangementState = SimpleObjectProperty(CastArrangement.GRID)
     val error = SimpleStringProperty()
     val isError = error.booleanBinding { !it.isNullOrBlank() }

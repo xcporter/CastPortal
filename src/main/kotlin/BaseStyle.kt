@@ -1,5 +1,4 @@
 import javafx.geometry.Pos
-import javafx.scene.effect.DropShadow
 import javafx.scene.paint.Color
 import tornadofx.*
 
@@ -20,20 +19,21 @@ class BaseStyle : Stylesheet() {
         val simpleDelete by cssclass()
         val simpleAdd by cssclass()
 
-        val textColor = c("#FFFFFF")
+        val textColor = c("#e1e1e1")
         val primary = c("#3C3C3F")
         val mid = c("#59595C")
         val midHigh = c("#828285")
         val highlight = c("#CFCFD2")
         val shadow = c("#2B2B2E")
     }
+
     init {
         importStylesheet("/style/custom.css")
 
         root {
-            prefWidth = 1000.px
-            prefHeight = 700.px
-            backgroundColor += primary
+            prefWidth = 1200.px
+            prefHeight = 640.px
+            backgroundColor += shadow
         }
 
         nowPlaying {
@@ -46,8 +46,8 @@ class BaseStyle : Stylesheet() {
 
         episodeButtons {
             borderRadius += box(0.px)
-            backgroundColor += highlight
-            textFill = highlight
+            backgroundColor += textColor
+            textFill = textColor
             and(hover) {
                 backgroundColor += midHigh
             }
@@ -56,7 +56,7 @@ class BaseStyle : Stylesheet() {
         invisibleButtons {
             borderRadius += box(0.px)
             backgroundColor += Color.TRANSPARENT
-            textFill = highlight
+            textFill = textColor
             and(hover) {
                 backgroundColor += midHigh
             }
@@ -64,8 +64,8 @@ class BaseStyle : Stylesheet() {
 
         playButton {
             borderRadius += box(0.px)
-            backgroundColor += highlight
-            textFill = highlight
+            backgroundColor += textColor
+            textFill = textColor
             and(hover) {
                 backgroundColor += Color.GREEN
             }
@@ -75,14 +75,14 @@ class BaseStyle : Stylesheet() {
             prefHeight = 20.px
             prefWidth = 4.px
             alignment = Pos.TOP_CENTER
-            backgroundColor += c("#3C7D7F")
+            backgroundColor += c("#CC4242")
         }
         track {
             prefHeight = 2.px
         }
 
         episode {
-            backgroundColor += primary
+            backgroundColor += shadow
             padding = box(8.px)
             and(hover) {
                 backgroundColor += c("#081F1D")
@@ -96,25 +96,6 @@ class BaseStyle : Stylesheet() {
             }
             and (pressed) {
                 backgroundColor += c("#0A3C3A")
-            }
-        }
-
-        moreEpisodes {
-            fontSize = 2.em
-            backgroundColor += Color.TRANSPARENT
-            borderRadius += box(4.px)
-            backgroundRadius += box(4.px)
-            backgroundInsets += box(2.px)
-            borderWidth += box(2.px)
-            borderColor += box(primary)
-            textFill = shadow
-
-            and (hover) {
-                backgroundColor += highlight
-            }
-
-            and (pressed) {
-                backgroundColor += Color.WHITE
             }
         }
 
@@ -145,7 +126,7 @@ class BaseStyle : Stylesheet() {
             backgroundInsets += box(2.px)
             borderWidth += box(2.px)
             borderColor += box(midHigh)
-            textFill = midHigh
+            textFill = textColor
 
             and (hover) {
                 backgroundColor += mid
@@ -176,6 +157,7 @@ class BaseStyle : Stylesheet() {
             }
         }
 
+
         player {
             prefHeight = 80.px
             backgroundColor += shadow
@@ -190,10 +172,10 @@ class BaseStyle : Stylesheet() {
         }
 
         scrollBar {
-            backgroundColor += primary // transparent
+            backgroundColor += shadow // transparent
             backgroundInsets += box(0.px)
             thumb {
-                backgroundColor += highlight
+                backgroundColor += textColor
                 backgroundRadius += box(8.px, 8.px)
                 backgroundInsets += box(0.px, 4.px)
             }
