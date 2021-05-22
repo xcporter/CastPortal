@@ -1,12 +1,13 @@
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.4.10"
     id("org.openjfx.javafxplugin") version "0.0.9"
-    id("com.xcporter.jpkg") version "0.0.7"
-    id("com.xcporter.metaview") version "0.0.4"
+    id("com.xcporter.jpkg") version "0.0.8"
+    id("com.xcporter.metaview") version "0.0.5"
+    id("org.beryx.runtime") version "1.12.4"
 }
 
 group = "com.xcporter"
-version = "1.0.4"
+version = "1.0.5"
 
 repositories {
     mavenCentral()
@@ -53,6 +54,7 @@ jpkg {
     resourceDir = "src/main/resources/icons/"
     menuGroup = "Podcast Farm"
     mainClass = "MainKt"
+    runtimeImage = "${buildDir.path}/jre"
 
     verbose = true
     mac {
@@ -73,6 +75,25 @@ jpkg {
 }
 
 generateUml {
-    classTree {}
+    classTree {
+        ignoreDelegates = listOf("CoroutineScope")
+    }
     functionTree {}
+}
+
+runtime {
+    addOptions("--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages")
+    addModules(
+        "jdk.crypto.ec",
+        "java.naming",
+        "java.desktop",
+        "java.logging",
+        "java.xml",
+        "java.prefs",
+        "jdk.unsupported"
+    )
+}
+
+tasks.withType(com.xcporter.jpkg.tasks.JPackageTask::class) {
+    dependsOn(tasks.jre)
 }
