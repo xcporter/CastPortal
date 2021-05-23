@@ -1,8 +1,8 @@
 package controller
 
 object Time {
-    private val pattern1 = Regex("^(\\d{2}):(\\d{2}):(\\d{2})$")
-    private val pattern2 = Regex("^(\\d{2}):(\\d{2})$")
+    private val pattern1 = Regex("^(\\d+):(\\d{2}):(\\d{2})$")
+    private val pattern2 = Regex("^(\\d+):(\\d{2})$")
     private val pattern3 = Regex("(\\d+)")
     fun parse(str: String) : Double {
         var acc: Double? = null
