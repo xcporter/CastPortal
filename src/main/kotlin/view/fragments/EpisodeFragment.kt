@@ -78,7 +78,7 @@ class EpisodeFragment : Fragment() {
 
     override val root = hbox(8.0) {
         addClass(episode)
-        prefWidthProperty().bind(PrimaryViewModel.contentWidth.multiply(0.64))
+        hgrow = Priority.ALWAYS
         hoverProperty().or(model.isPlaying).onChange {
             if (it) style { backgroundColor +=  c("#081F1D") }
             else style { backgroundColor += primary }
@@ -98,7 +98,7 @@ class EpisodeFragment : Fragment() {
         }
         text(model.title) {
             fill = highlight
-            wrappingWidth = 250.0
+            wrappingWidthProperty().bind(PrimaryViewModel.contentWidth.multiply(0.3))
         }
         region { hgrow = Priority.ALWAYS }
         vbox (5.0) {

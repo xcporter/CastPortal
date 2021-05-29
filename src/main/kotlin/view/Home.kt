@@ -2,6 +2,7 @@ package view
 
 import BaseStyle.Companion.invisibleButtons
 import BaseStyle.Companion.midHigh
+import BaseStyle.Companion.primary
 import BaseStyle.Companion.shadow
 import BaseStyle.Companion.textColor
 import CastArrangement
@@ -73,6 +74,7 @@ class Home : View() {
                 alignment = Pos.CENTER_RIGHT
                 style {
                     padding = box(5.px, 10.px)
+                    backgroundColor += shadow
                 }
                 label("Offline") {
                     visibleWhen { PrimaryViewModel.offlineMode }
@@ -107,20 +109,19 @@ class Home : View() {
                 hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
                 vbarPolicy = ScrollPane.ScrollBarPolicy.ALWAYS
                 style {
-                    backgroundColor += shadow
+                    backgroundColor += primary
                 }
 
                 alignment = Pos.CENTER
 
                 isFitToHeight = true
                 isFitToWidth = true
-                displayPanel = vbox{
+                displayPanel = vbox {
                     add(gridPanel)
                 }
             }
         }
         vbox {
-            useMaxSize = true
             alignment = Pos.CENTER
             label("Checking for new episodes...") {
                 style {

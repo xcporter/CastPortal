@@ -17,7 +17,7 @@ import tornadofx.*
 class Player : View(), CoroutineScope {
     override val coroutineContext = Dispatchers.Main
     val slider = slider(0.0, 1.0, 0.0) {
-        minWidth = 80.0
+        minWidth = 50.0
         hgrow = Priority.ALWAYS
         valueProperty().bindBidirectional(Playback.sliderOutProperty)
 //        Switch bindings to avoid control feedback loop between current time and seek
@@ -40,6 +40,7 @@ class Player : View(), CoroutineScope {
 
     override val root = vbox {
         alignment = Pos.BOTTOM_CENTER
+        vgrow = Priority.SOMETIMES
         addClass(player)
         hbox {
             style {
@@ -90,9 +91,10 @@ class Player : View(), CoroutineScope {
                     managedWhen { !Playback.isPlaying }
 
                     action {
-                        Playback.player?.let { it.play() }
+                        Playback.player?.play()
                             ?: PrimaryViewModel.getFirst()?.startPlayback()
                     }
+
                     graphic = FontAwesomeIconView(FontAwesomeIcon.PLAY, "2em").apply { fill = textColor }
                 }
                 button() {

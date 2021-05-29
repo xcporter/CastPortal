@@ -3,7 +3,7 @@ package view.fragments
 import BaseStyle.Companion.invisibleButtons
 import BaseStyle.Companion.mid
 import BaseStyle.Companion.midHigh
-import BaseStyle.Companion.shadow
+import BaseStyle.Companion.primary
 import BaseStyle.Companion.textColor
 import ViewState
 import controller.Configuration
@@ -13,6 +13,7 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.ScrollPane
 import javafx.scene.layout.Priority
+import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import kotlinx.coroutines.*
 import model.CastScope
@@ -27,6 +28,7 @@ class CastFragment() : Fragment(), CoroutineScope {
     override val scope = super.scope as CastScope
     override val coroutineContext = Dispatchers.IO
     private val downloadsOnly: Boolean by param(false)
+    private val epList: VBox by singleAssign()
 
     private val reverse = SimpleBooleanProperty(false)
 
@@ -95,7 +97,6 @@ class CastFragment() : Fragment(), CoroutineScope {
             add(imageContainer)
             vbox {
                 hgrow = Priority.ALWAYS
-                minWidth = 100.0
                 text(scope.model.author) {
                     style {
                         fill = textColor
@@ -114,8 +115,10 @@ class CastFragment() : Fragment(), CoroutineScope {
                     hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
                     vbarPolicy = ScrollPane.ScrollBarPolicy.AS_NEEDED
                     isFitToWidth = true
+                    minViewportWidth = 100.0
+                    minWidth = 100.0
                     style {
-                        backgroundColor += shadow
+                        backgroundColor += primary
                         padding = box(5.px, 10.px)
                     }
                     text(scope.model.description) {
@@ -132,6 +135,12 @@ class CastFragment() : Fragment(), CoroutineScope {
             alignment = Pos.CENTER_RIGHT
             vbox() {
                 prefWidthProperty().bind(PrimaryViewModel.contentWidth.multiply(0.33))
+                visibleWhen {
+                    PrimaryViewModel.width.greaterThan(910.0)
+                }
+                managedWhen {
+                    PrimaryViewModel.width.greaterThan(910.0)
+                }
                 style {
                     padding = box(10.px)
                 }
@@ -139,8 +148,9 @@ class CastFragment() : Fragment(), CoroutineScope {
                 scrollpane {
                     hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
                     vbarPolicy = ScrollPane.ScrollBarPolicy.AS_NEEDED
+                    minViewportWidth = 100.0
                     style {
-                        backgroundColor += shadow
+                        backgroundColor += primary
                     }
                     vbox(5.0) {
                         text(scope.currentTitle) {
@@ -148,19 +158,20 @@ class CastFragment() : Fragment(), CoroutineScope {
                                 fill = textColor
                                 fontSize = 1.5.em
                             }
-                            wrappingWidthProperty().bind(PrimaryViewModel.contentWidth.multiply(0.3).minus(20.0))
+                            wrappingWidthProperty().bind(PrimaryViewModel.contentWidth.multiply(0.25))
                         }
                         text(scope.currentDescription) {
                             style {
                                 fill = textColor
                                 fontSize = 1.em
                             }
-                            wrappingWidthProperty().bind(PrimaryViewModel.contentWidth.multiply(0.3).minus(20.0))
+                            wrappingWidthProperty().bind(PrimaryViewModel.contentWidth.multiply(0.22))
                         }
                     }
                 }
             }
             vbox(5.0) {
+                hgrow = Priority.ALWAYS
                 hbox(5.0) {
                     alignment = Pos.CENTER_RIGHT
                     style {
@@ -168,14 +179,14 @@ class CastFragment() : Fragment(), CoroutineScope {
                     }
                     label("Sort By:") {
                         style {
-                            fontSize = 1.5.em
+                            fontSize = 1.3.em
                             textFill = midHigh
                         }
                     }
                     button("New") {
                         addClass(invisibleButtons)
                         style {
-                            fontSize = 1.5.em
+                            fontSize = 1.3.em
                             textFillProperty().bind(sortUpFill)
                         }
                         action {
@@ -185,22 +196,25 @@ class CastFragment() : Fragment(), CoroutineScope {
                     button("Old") {
                         addClass(invisibleButtons)
                         style {
-                            fontSize = 1.5.em
+                            fontSize = 1.3.em
                             textFillProperty().bind(sortDownFill)
                         }
                         action {
                             reverse.value = true
                         }
                     }
-                    region { hgrow = Priority.ALWAYS }
+                    region {
+                        hgrow = Priority.ALWAYS
+                    }
                     label("Search:") {
                         style {
-                            fontSize = 1.5.em
+                            fontSize = 1.3.em
                             textFill = midHigh
                         }
                     }
                     textfield (searchFilter) {
                         maxWidth = 200.0
+                        minWidth = 50.0
                         style {
                             backgroundColor += mid
                             textFill = textColor
@@ -210,12 +224,17 @@ class CastFragment() : Fragment(), CoroutineScope {
 
                 scrollpane {
                     hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
-                    minViewportWidth = 500.0
+                    minViewportWidth = 100.0
+                    minWidth = 100.0
+                    isFitToWidth = true
                     style {
-                        backgroundColor += shadow
+                        backgroundColor += primary
                     }
                     vbox {
                         hgrow = Priority.ALWAYS
+                        style {
+                            padding = box(0.px, 10.px)
+                        }
                         bindChildren(items) {
                             find<EpisodeFragment>(scope, "model" to it).root
                         }

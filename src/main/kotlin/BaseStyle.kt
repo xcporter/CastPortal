@@ -31,9 +31,9 @@ class BaseStyle : Stylesheet() {
         importStylesheet("/style/custom.css")
 
         root {
-            prefWidth = 1200.px
+            prefWidth = 1090.px
             prefHeight = 640.px
-            backgroundColor += shadow
+            backgroundColor += primary
         }
 
         nowPlaying {
@@ -82,7 +82,7 @@ class BaseStyle : Stylesheet() {
         }
 
         episode {
-            backgroundColor += shadow
+            backgroundColor += primary
             padding = box(8.px)
             and(hover) {
                 backgroundColor += c("#081F1D")
@@ -172,7 +172,7 @@ class BaseStyle : Stylesheet() {
         }
 
         scrollBar {
-            backgroundColor += shadow // transparent
+            backgroundColor += primary // transparent
             backgroundInsets += box(0.px)
             thumb {
                 backgroundColor += textColor

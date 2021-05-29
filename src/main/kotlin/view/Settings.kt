@@ -4,8 +4,8 @@ import BaseStyle.Companion.delete
 import BaseStyle.Companion.highlight
 import BaseStyle.Companion.mid
 import BaseStyle.Companion.midHigh
+import BaseStyle.Companion.primary
 import BaseStyle.Companion.settingsButton
-import BaseStyle.Companion.shadow
 import BaseStyle.Companion.simpleAdd
 import BaseStyle.Companion.simpleDelete
 import controller.Configuration
@@ -64,7 +64,7 @@ class Settings : View(), CoroutineScope {
                 hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
                 fitToParentWidth()
                 style {
-                    backgroundColor += shadow
+                    backgroundColor += primary
                 }
                 vbox(6.0) {
                     minWidth = 500.0

@@ -25,6 +25,7 @@ object PrimaryViewModel : CoroutineScope {
     val isError = error.booleanBinding { !it.isNullOrBlank() }
     val warning = SimpleStringProperty("")
     var warnAction: (() -> Unit)? = null
+    val width = SimpleDoubleProperty(0.0)
 
     val offlineMode = SimpleBooleanProperty(false)
 

@@ -97,3 +97,7 @@ runtime {
 tasks.withType(com.xcporter.jpkg.tasks.JPackageTask::class) {
     dependsOn(tasks.jre)
 }
+
+tasks.withType(com.xcporter.jpkg.tasks.SignedAppImage::class) {
+    dependsOn(tasks.jre)
+}

@@ -31,10 +31,7 @@ class Primary() : View ("Cast Portal"), CoroutineScope {
     }
 
     init {
-        PrimaryViewModel.contentWidth.value = container.width
-        container.widthProperty().onChange {
-            PrimaryViewModel.contentWidth.value = it
-        }
+        PrimaryViewModel.contentWidth.bind(container.widthProperty())
         PrimaryViewModel.viewState.onChange {
             it?.let {
                 container.replaceChildren (
@@ -71,29 +68,33 @@ class Primary() : View ("Cast Portal"), CoroutineScope {
         }
         left<Menu>()
         center = vbox {
-            fitToParentSize()
+            hgrow = Priority.ALWAYS
+            vgrow = Priority.ALWAYS
             add(container)
             add<Player>()
         }
 
 
-        bottom {
-            hbox {
-                style = """
-                -fx-border-style: solid none none none;
-                -fx-border-color: orange;
-                -fx-border-width: 2;
-                -fx-padding: 2px;
-            """
-                region { hgrow = Priority.ALWAYS }
-                text("©2020 Podcast Farm Inc. - All Rights Reserved") {
-                    style {
-                        fill = Color.WHITE
-                        fontSize = 10.px
-                    }
+        bottom = hbox {
+            style = """
+            -fx-border-style: solid none none none;
+            -fx-border-color: orange;
+            -fx-border-width: 2;
+            -fx-padding: 2px;
+        """
+            alignment = Pos.CENTER_RIGHT
+            text("©2020 Podcast Farm Inc. - All Rights Reserved") {
+                style {
+                    fill = Color.WHITE
+                    fontSize = 10.px
                 }
             }
         }
+
+    }
+
+    init {
+        PrimaryViewModel.width.bind(root.widthProperty())
     }
 
     override fun onBeforeShow() {
@@ -110,5 +111,10 @@ class Primary() : View ("Cast Portal"), CoroutineScope {
                 syndication.downloadImages(syndication.checkMissingImages())
             }
         }
+    }
+
+    override fun onDock() {
+        primaryStage.minHeight = 575.0
+        primaryStage.minWidth = 740.0
     }
 }
